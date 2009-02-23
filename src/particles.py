@@ -49,6 +49,8 @@ class Particles(Renderable):
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 		glDepthMask(GL_FALSE)
 		
+		glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_FALSE)
+		
 		glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
 		
 		glEnableClientState(GL_VERTEX_ARRAY)
@@ -66,7 +68,7 @@ class Particles(Renderable):
 		glDisableClientState(GL_VERTEX_ARRAY)
 		
 		glBindBuffer(GL_ARRAY_BUFFER, 0)
-		
+				
 		glDepthMask(GL_TRUE)
 		glDisable(GL_BLEND)
 		glDisable(GL_POINT_SPRITE)

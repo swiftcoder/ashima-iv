@@ -54,7 +54,7 @@ fps_display = pyglet.clock.ClockDisplay()
 
 def init():	
 	glEnable(GL_CULL_FACE)
-	glFrontFace(GL_FRONT)
+	glFrontFace(GL_CCW)
 	
 	glEnable(GL_DEPTH_TEST)
 	glDepthFunc(GL_LEQUAL)
