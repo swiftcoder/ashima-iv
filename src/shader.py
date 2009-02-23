@@ -6,12 +6,12 @@ import euclid
 
 class Shader:
 	def __init__(self, vert = [], frag = []):
-		self.Handle = glCreateProgram()
+		self.Handle = glCreateProgramObjectARB()
 	#	print 'program: ', self.Handle
 		self.Linked = False
 		
-		self.createShader(vert, GL_VERTEX_SHADER)
-		self.createShader(frag, GL_FRAGMENT_SHADER)
+		self.createShader(vert, GL_VERTEX_SHADER_ARB)
+		self.createShader(frag, GL_FRAGMENT_SHADER_ARB)
 		
 		self.link()
 	
@@ -20,34 +20,34 @@ class Shader:
 		if count < 1:
 			return
 		
-		shader = glCreateShader(type)
+		shader = glCreateShaderObjectARB(type)
 	#	print 'shader: ', shader
 				
 		src = (c_char_p * count)(*strings)
-		glShaderSource(shader, count, cast(pointer(src), POINTER(POINTER(c_char))), None)
+		glShaderSourceARB(shader, count, cast(pointer(src), POINTER(POINTER(c_char))), None)
 		
-		glCompileShader(shader)
+		glCompileShaderARB(shader)
 		
 		temp = c_int(0)
-		glGetShaderiv(shader, GL_COMPILE_STATUS, byref(temp))
+		glGetObjectParameterivARB(shader, GL_OBJECT_COMPILE_STATUS_ARB, byref(temp))
 		if not temp:
-			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, byref(temp))
+			glGetObjectParameterivARB(shader, GL_OBJECT_INFO_LOG_LENGTH_ARB, byref(temp))
 			buffer = create_string_buffer(temp.value)
-			glGetShaderInfoLog(shader, temp, None, buffer)
+			glGetInfoLogARB(shader, temp, None, buffer)
 			
 			print buffer.value
 		
-		glAttachShader(self.Handle, shader);
+		glAttachObjectARB(self.Handle, shader);
 	
 	def link(self):
-		glLinkProgram(self.Handle)
+		glLinkProgramARB(self.Handle)
 		
 		temp = c_int(0)
-		glGetProgramiv(self.Handle, GL_LINK_STATUS, byref(temp))
+		glGetObjectParameterivARB(self.Handle, GL_OBJECT_LINK_STATUS_ARB, byref(temp))
 		if not temp:
-			glGetProgramiv(self.Handle, GL_INFO_LOG_LENGTH, byref(temp))
+			glGetObjectParameterivARB(self.Handle, GL_OBJECT_INFO_LOG_LENGTH_ARB, byref(temp))
 			buffer = create_string_buffer(temp.value)
-			glGetProgramInfoLog(self.Handle, temp, None, buffer)
+			glGetInfoLogARB(self.Handle, temp, None, buffer)
 			
 			print buffer.value
 		else:
@@ -55,20 +55,20 @@ class Shader:
 		
 	def bind(self):
 		if self.Linked:
-			glUseProgram(self.Handle)
+			glUseProgramObjectARB(self.Handle)
 	
 	def unbind(self):
 		if self.Linked:
-			glUseProgram(0)
+			glUseProgramObjectARB(0)
 	
 	def uniform(self, name, vals):
 		if self.Linked:
 			if len(vals) in range(1, 5):
-				{ 1 : glUniform1f,
-					2 : glUniform2f,
-					3 : glUniform3f,
-					4 : glUniform4f
-				}[len(vals)](glGetUniformLocation(self.Handle, name), *vals)
+				{ 1 : glUniform1fARB,
+					2 : glUniform2fARB,
+					3 : glUniform3fARB,
+					4 : glUniform4fARB
+				}[len(vals)](glGetUniformLocationARB(self.Handle, name), *vals)
 	
 	def uniform_matrix(self, name, mat):
 		if isinstance(mat, euclid.Matrix3):
@@ -81,14 +81,14 @@ class Shader:
 		if self.Linked:
 			if l in [4, 9, 16]:
 				{
-					4: glUniformMatrix2fv,
-					9: glUniformMatrix3fv,
-					16: glUniformMatrix4fv,
-				}[l](glGetUniformLocation(self.Handle, name), 1, False, (c_float * l)(*mat))
+					4: glUniformMatrix2fvARB,
+					9: glUniformMatrix3fvARB,
+					16: glUniformMatrix4fvARB,
+				}[l](glGetUniformLocationARB(self.Handle, name), 1, False, (c_float * l)(*mat))
 	
 	def texture(self, unit):
 		if self.Linked:
-			glUniform1i(glGetUniformLocation(self.Handle, 'tex' + str(unit)), unit)
+			glUniform1iARB(glGetUniformLocationARB(self.Handle, 'tex' + str(unit)), unit)
 
 	
 	@classmethod
