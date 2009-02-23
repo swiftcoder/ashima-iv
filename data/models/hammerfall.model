@@ -1,0 +1,7 @@
+{
+	"version" : 1,
+	
+	"model" : "data/models/hammerfall/hammerfall.obj",
+	"shader" : "data/shaders/sunlight.shader",	
+	"textures" : ["data/models/hammerfall/ambient.dds", "data/models/hammerfall/normal.dds"]
+}

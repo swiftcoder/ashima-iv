@@ -1,0 +1,7 @@
+{
+	"version" : 1,
+	
+	"model" : "data/models/anaconda/anaconda.obj",
+	"shader" : "data/shaders/sunlight.shader",	
+	"textures" : ["data/models/anaconda/ambient.dds", "data/models/anaconda/normal.dds"]
+}

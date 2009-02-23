@@ -1,0 +1,7 @@
+{
+	"version" : 1,
+	
+	"model" : "data/models/sky/sphere.obj",
+	"shader" : "data/shaders/unlit.shader",	
+	"textures" : ["data/models/sky/space.dds"]
+}

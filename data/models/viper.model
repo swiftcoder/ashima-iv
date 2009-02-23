@@ -1,0 +1,7 @@
+{
+	"version" : 1,
+	
+	"model" : "data/models/viper/viper.obj",
+	"shader" : "data/shaders/sunlight.shader",	
+	"textures" : ["data/models/viper/ambient.dds", "data/models/viper/normal.dds"]
+}
