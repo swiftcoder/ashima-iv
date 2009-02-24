@@ -76,7 +76,10 @@ class SkyNode(Node):
 		Node.render(self, camera)
 
 class IntervalNode(Node):
-	interval = 10
+	def __init__(self, interval=10, parent=None):
+		Node.__init__(self, parent)
+		
+		self.interval = interval
 	
 	def render(self, camera):
 		m = self.transform

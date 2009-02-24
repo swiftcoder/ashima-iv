@@ -16,7 +16,7 @@ if sys.platform == 'darwin':
 		'argv_emulation': True,
 		'optimize': 2,
 		'compressed': True,
-		'includes': ['pyglet.media.drivers.openal'],
+		'includes': ['pyglet.media.drivers.openal', 'pyglet.image.codecs.pil'],
 		'frameworks': [],
 		'resources': ['data'],
 		'semi_standalone': True

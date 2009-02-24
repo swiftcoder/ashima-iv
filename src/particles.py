@@ -49,7 +49,7 @@ class Particles(Renderable):
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 		glDepthMask(GL_FALSE)
 		
-		glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_FALSE)
+		glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE)
 		
 		glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
 		

@@ -35,6 +35,9 @@ class _Teams:
 		for a in vals:
 			res.extend(a)
 		return res
+	
+	def all(self):
+		return reduce(lambda x, y: x + y, [v for k, v in self.teams.iteritems()])
 
 Teams = _Teams()
 del _Teams

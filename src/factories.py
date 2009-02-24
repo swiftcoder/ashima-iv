@@ -31,11 +31,14 @@ def create_camera(camera):
 	
 	return e
 
-def create_anaconda():
+def create_anaconda(ai=True):
 	e = Entity()
 	
 	e.graphics = True
 	e.physics = True
+	
+	if ai:
+		e.ai = 'fighter'
 	
 	e.model = Resources.load_model('data/models/anaconda.model')
 	
@@ -49,9 +52,9 @@ def create_anaconda():
 	e.max_acceleration = 2000.0 #8000.0
 	e.max_velocity = 4.0
 	
-	e.max_yaw = 30.0 #math.pi/3
-	e.max_pitch = 30.0 #math.pi/3
-	e.max_roll = 30.0 #math.pi/3
+	e.max_yaw = 300.0 #math.pi/3
+	e.max_pitch = 300.0 #math.pi/3
+	e.max_roll = 300.0 #math.pi/3
 	
 	e.mass = 5.0
 	e.extents = Vector3(8, 3, 10)
@@ -59,7 +62,7 @@ def create_anaconda():
 	e.engines = [Engine(e, Vector3(0, 0.125, 0))]
 
 	e.primary_weapon = Weapon(e, bullet_factory, 0.25)
-	e.secondary_weapon = Weapon(e, rocket_factory, 1.0)
+	e.secondary_weapon = Weapon(e, missile_factory, 1.0)
 		
 	e.fire_primary = new.instancemethod(lambda s: s.primary_weapon.fire(Vector3(0, 0, 20)), e, Entity)
 	e.fire_secondary = new.instancemethod(lambda s: s.secondary_weapon.fire(Vector3(0, 0, 20)), e, Entity)
@@ -82,7 +85,6 @@ def create_hammerfall():
 	
 	e.min_acceleration = 4000.0 #4000.0
 	e.max_acceleration = 8000.0 #8000.0
-	e.max_velocity = 4.0
 	
 	e.max_yaw = math.pi/8
 	e.max_pitch = math.pi/8

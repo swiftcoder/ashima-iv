@@ -10,6 +10,7 @@
 			void main() { \
 				gl_Position = model_view_proj_matrix * gl_Vertex; \
 				depth = gl_Position.z; \
+				gl_PointSize = 4.0; \
 			}"
 	},
 	

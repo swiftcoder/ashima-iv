@@ -29,14 +29,14 @@ class _Physics:
 	class PhysicsNode:
 		def __init__(self, entity, world, space):
 			if not entity.has('position'):
-				entity.position = Vector3(0, 0, 0)
+				entity.position = Vector3()
 			if not entity.has('rotation'):
 				entity.rotation = Quaternion()
 						
-			if not entity.has('velocity'):
-				entity.velocity = Vector3(0, 0, 0)
-			if not entity.has('acceleration'):
-				entity.acceleration = Vector3(0, 0, 0)
+			if not entity.has('linear_velocity'):
+				entity.linear_velocity = Vector3()
+			if not entity.has('angular_velocity'):
+				entity.angular_velocity = Quaternion()
 			
 			if not entity.has('throttle'):
 				entity.throttle = 0.0
@@ -71,18 +71,18 @@ class _Physics:
 			
 			def yaw(self, dir):
 				self._yaw = dir
-			entity.yaw_left = new.instancemethod(lambda s: yaw(s,25), entity, Entity)
-			entity.yaw_right = new.instancemethod(lambda s: yaw(s, -25), entity, Entity)
+			entity.yaw_left = new.instancemethod(lambda s: yaw(s,1), entity, Entity)
+			entity.yaw_right = new.instancemethod(lambda s: yaw(s, -1), entity, Entity)
 			
 			def pitch(self, dir):
 				self._pitch = dir
-			entity.pitch_up = new.instancemethod(lambda s: pitch(s,-25), entity, Entity)
-			entity.pitch_down = new.instancemethod(lambda s: pitch(s, 25), entity, Entity)
+			entity.pitch_up = new.instancemethod(lambda s: pitch(s,-1), entity, Entity)
+			entity.pitch_down = new.instancemethod(lambda s: pitch(s, 1), entity, Entity)
 			
 			def roll(self, dir):
 				self._roll = dir
-			entity.roll_left = new.instancemethod(lambda s: roll(s,-25), entity, Entity)
-			entity.roll_right = new.instancemethod(lambda s: roll(s, 25), entity, Entity)
+			entity.roll_left = new.instancemethod(lambda s: roll(s,-1), entity, Entity)
+			entity.roll_right = new.instancemethod(lambda s: roll(s, 1), entity, Entity)
 			
 			def set_pos(self, pos):
 				self.position = pos			
@@ -99,34 +99,27 @@ class _Physics:
 			if entity.has('model'):
 				self.geom = ode.GeomTriMesh(entity.model.trimesh, space)
 			else:
-				self.geom = ode.GeomSphere(space, 0.1)			
+				self.geom = ode.GeomBox(space, entity.extents)
 			self.geom.setBody(self.body)
 			
 			self.body.setPosition(entity.position)
-			self.body.setLinearVel(entity.velocity)
+			self.body.setLinearVel(entity.linear_velocity)
+			
+			angle, axis = entity.angular_velocity.get_angle_axis()
+			self.body.setAngularVel(axis*angle)
 			
 			m = entity.rotation.get_matrix()
 			self.body.setRotation([m.a, m.b, m.c, m.e, m.f, m.g, m.i, m.j, m.k])
 		
-		def update(self, entity):
-			'''heading = entity.rotation*Vector3(0, 0, 1)
-			
-			thrust = entity.min_acceleration + entity.throttle*(entity.max_acceleration - entity.min_acceleration)
-			force = thrust/entity.mass
-			
-			# 2nd order symplectic velocity vertlet integrator			
-			entity.position += entity.velocity*dt + entity.acceleration*dt*dt*0.5
-			
-			entity.velocity += entity.acceleration*dt*0.5
-			entity.acceleration = thrust*heading
-			entity.velocity += entity.acceleration*dt*0.5
-			
-			entity.velocity -= entity.velocity*entity.damping*dt
-			
-			entity.rotation *= Quaternion.new_rotate_euler(entity._yaw*entity.max_yaw*dt, entity._roll*entity.max_roll*dt, entity._pitch*entity.max_pitch*dt)'''
-			
+		def update(self, entity):			
 			entity.position = Vector3(*self.body.getPosition())
 			entity.rotation = Quaternion(*self.body.getQuaternion())
+			
+			linear = self.body.getLinearVel()
+			entity.linear_velocity = Vector3(*linear)
+			
+			angular = Vector3(*self.body.getLinearVel())
+			entity.angular_velocity = Quaternion.new_rotate_axis(abs(angular), angular)
 			
 			thrust = entity.min_acceleration + entity.throttle*(entity.max_acceleration - entity.min_acceleration)
 			self.body.addRelForce(Vector3(0, 0, 1)*thrust)
@@ -137,10 +130,6 @@ class _Physics:
 				self.body.addRelTorque(Vector3(entity._pitch, 0, 0)*entity.max_pitch)
 			if entity._roll != 0:
 				self.body.addRelTorque(Vector3(0, 0, entity._roll)*entity.max_roll)
-			
-			#torque = Quaternion.new_rotate_euler(entity._yaw, entity._roll, entity._pitch).get_angle_axis()
-			#torque = torque[1]*torque[0]*entity.turn_rate
-			#self.body.addRelTorque(torque)
 			
 			entity._yaw, entity._pitch, entity._roll = 0, 0, 0
 			entity._thrust = 0

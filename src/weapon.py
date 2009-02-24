@@ -30,7 +30,7 @@ def bullet_factory(position, rotation, velocity, team):
 	e.position = copy(position)
 	e.rotation = copy(rotation)
 	
-	e.velocity = copy(velocity)
+	e.linear_velocity = copy(velocity)
 	
 	e.throttle = 1.0
 	
@@ -46,11 +46,12 @@ def bullet_factory(position, rotation, velocity, team):
 	
 	return e
 
-def rocket_factory(position, rotation, velocity, team):
+def missile_factory(position, rotation, velocity, team):
 	e = Entity()
 	
 	e.graphics = True
 	e.physics = True
+	e.ai = 'missile'
 	
 	n = BillboardNode()
 	n.renderables.append( Sprite(1, 1, Resources.load_shader('data/shaders/unlit.shader'), Resources.load_texture('data/images/burst.png')) )
@@ -59,7 +60,7 @@ def rocket_factory(position, rotation, velocity, team):
 	e.position = copy(position)
 	e.rotation = copy(rotation)
 	
-	e.velocity = copy(velocity)
+	e.linear_velocity = copy(velocity)
 	
 	e.throttle = 1.0
 	
@@ -73,7 +74,7 @@ def rocket_factory(position, rotation, velocity, team):
 	e.mass = 0.05 # 50 kg
 	e.damping = 0.995
 	
-	e.lifetime = 3.0
+	e.lifetime = 10.0
 	e.remove_on_collide = True
 	
 	e.engines = [Engine(e, Vector3(0, 0, -1))]
@@ -105,7 +106,7 @@ class Weapon:
 			rot = self.entity.rotation
 			pos = self.entity.position + rot*offset
 			
-			b = self.factory(pos, rot, self.entity.velocity, self.entity.team)
+			b = self.factory(pos, rot, self.entity.linear_velocity, self.entity.team)
 			World.add(b)
 			
 			self.last_fire = self.reload_delay

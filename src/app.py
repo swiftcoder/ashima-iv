@@ -9,6 +9,9 @@ from graphics import Graphics
 from physics import Physics
 from lifetime import Lifetime
 from teams import Teams
+from ai import AI
+
+import ai_missile, ai_fighter
 
 import factories
 
@@ -35,12 +38,12 @@ from math import sin, cos, pi
 sunlight = Resources.load_shader('data/shaders/sunlight.shader')
 
 ship = factories.create_hammerfall()
-ship.position = Vector3(0, 0, 500)
+ship.position = Vector3(0, 0, 250)
 ship.team = 'red'
 World.add(ship)
 
 for i in range(5, 0, -1):
-	ship = factories.create_anaconda()
+	ship = factories.create_anaconda(i != 1)
 	ship.position = Vector3(i*5, 0, i*10 + 5)
 	ship.team = 'blue'
 	World.add(ship)
@@ -79,9 +82,8 @@ def init():
 	sphere.render_pass = Pass.sky
 	sky.renderables.append( sphere )
 	
-	dust = IntervalNode(ship.node)
-	dust.interval = 100
-	dust.renderables.append( Dust(4, 100, 1000) )
+	#dust = IntervalNode(10, ship.node)
+	#dust.renderables.append( Dust(4, 10, 100) )
 	
 	Window.set_mouse_visible(False)
 
