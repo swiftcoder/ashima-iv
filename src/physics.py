@@ -54,12 +54,8 @@ class _Physics:
 				entity.min_acceleration = 0.0
 			if not entity.has('max_acceleration'):
 				entity.max_acceleration = 0.0
-			if not entity.has('max_yaw'):
-				entity.max_yaw = 0.0
-			if not entity.has('max_pitch'):
-				entity.max_pitch = 0.0
-			if not entity.has('max_roll'):
-				entity.max_roll = 0.0
+			if not entity.has('turn_rate'):
+				entity.turn_rate = 0.0
 			
 			if not entity.has('mass'):
 				entity.mass = 1.0
@@ -84,6 +80,10 @@ class _Physics:
 			entity.roll_left = new.instancemethod(lambda s: roll(s,-1), entity, Entity)
 			entity.roll_right = new.instancemethod(lambda s: roll(s, 1), entity, Entity)
 			
+			def turn_towards(self, dir):
+				Physics.Nodes[self].body.addTorque(dir.normalized()*entity.turn_rate)
+			entity.turn_towards = new.instancemethod(turn_towards, entity, Entity)
+				
 			def set_pos(self, pos):
 				self.position = pos			
 			entity.warp = new.instancemethod(set_pos, entity, Entity)
@@ -124,12 +124,14 @@ class _Physics:
 			thrust = entity.min_acceleration + entity.throttle*(entity.max_acceleration - entity.min_acceleration)
 			self.body.addRelForce(Vector3(0, 0, 1)*thrust)
 			
-			if entity._yaw != 0:
-				self.body.addRelTorque(Vector3(0, entity._yaw, 0)*entity.max_yaw)
+			'''if entity._yaw != 0:
+				self.body.addRelTorque(Vector3(0, entity._yaw, 0)*entity.turn_rate)
 			if entity._pitch != 0:
-				self.body.addRelTorque(Vector3(entity._pitch, 0, 0)*entity.max_pitch)
+				self.body.addRelTorque(Vector3(entity._pitch, 0, 0)*entity.turn_rate)
 			if entity._roll != 0:
-				self.body.addRelTorque(Vector3(0, 0, entity._roll)*entity.max_roll)
+				self.body.addRelTorque(Vector3(0, 0, entity._roll)*entity.turn_rate)'''
+			
+			self.body.addRelTorque(Vector3(entity._pitch, entity._yaw, entity._roll)*entity.turn_rate)
 			
 			entity._yaw, entity._pitch, entity._roll = 0, 0, 0
 			entity._thrust = 0

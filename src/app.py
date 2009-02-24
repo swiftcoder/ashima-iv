@@ -42,9 +42,15 @@ ship.position = Vector3(0, 0, 250)
 ship.team = 'red'
 World.add(ship)
 
-for i in range(5, 0, -1):
-	ship = factories.create_anaconda(i != 1)
-	ship.position = Vector3(i*5, 0, i*10 + 5)
+for i in range(4, 0, -1):
+	ship = factories.create_anaconda()
+	ship.position = Vector3(i*5, -20, i*10 + 500)
+	ship.team = 'red'
+	World.add(ship)
+
+for i in range(2, 0, -1):
+	ship = factories.create_viper(i != 1)
+	ship.position = Vector3(i*5, -20, i*10 + 5)
 	ship.team = 'blue'
 	World.add(ship)
 

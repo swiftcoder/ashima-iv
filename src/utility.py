@@ -52,6 +52,9 @@ def look_at_quaternion(dir, up):
 	
 	return q.normalized()
 
+def inverse_quaternion(q):
+	return q.normalized().conjugated()
+	
 def rotation_to(src, dst):
 	c = src.cross(dst)
 	

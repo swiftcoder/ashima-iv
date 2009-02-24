@@ -67,9 +67,7 @@ def missile_factory(position, rotation, velocity, team):
 	e.min_acceleration = 20.0
 	e.max_acceleration = 80.0
 	
-	e.max_yaw = math.pi/16
-	e.max_pitch = math.pi/16
-	e.max_roll = math.pi/16
+	e.turn_rate = 0.5
 	
 	e.mass = 0.05 # 50 kg
 	e.damping = 0.995
