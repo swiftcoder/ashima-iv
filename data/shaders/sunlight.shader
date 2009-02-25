@@ -27,10 +27,10 @@
 				vec4 texture = texture2D(tex0, gl_TexCoord[0].xy); \
 				vec3 normal = texture2D(tex1, gl_TexCoord[0].xy).xyz; \
 				\
-				float diffuse = dot( normal, sun ); \
+				float diffuse = max( dot( normal, sun ), 0.2 ); \
 				float specular = 4.0*pow(diffuse, 32.0); \
 				\
-				gl_FragColor = (diffuse + specular + 0.25)*texture; \
+				gl_FragColor = (diffuse + specular)*texture; \
 			}"
 	}
 }
