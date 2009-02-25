@@ -3,7 +3,7 @@ import sys
 
 if sys.platform == 'darwin':
 	from mac.ode import *
-if sys.platform == 'win32':
+elif sys.platform == 'win32':
 	from win32.ode import *
 	InitODE()
 else:
