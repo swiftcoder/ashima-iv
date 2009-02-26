@@ -25,7 +25,7 @@
 			\
 			void main() { \
 				vec4 texture = texture2D(tex0, gl_TexCoord[0].xy); \
-				vec3 normal = texture2D(tex1, gl_TexCoord[0].xy).xyz; \
+				vec3 normal = texture2D(tex1, gl_TexCoord[0].xy).xyz*2.0 - 1.0; \
 				\
 				float diffuse = max( dot( normal, sun ), 0.2 ); \
 				float specular = 4.0*pow(diffuse, 32.0); \

@@ -65,6 +65,15 @@ class BillboardNode(Node):
 		
 		Node.render(self, camera)
 
+class ZAxisBillboardNode(Node):
+	def render(self, camera):
+		m, v = self.transform, camera.view
+		m.a, m.b, m.c = v.a, v.e, 0
+		m.e, m.f, m.g = v.b, v.f, 0
+		m.i, m.j, m.k = 0,   0,   1
+		
+		Node.render(self, camera)
+
 class SkyNode(Node):	
 	def render(self, camera):
 		m = self.transform

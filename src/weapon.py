@@ -4,9 +4,12 @@ from resources import Resources
 
 from lifetime import Lifetime
 
-from node import BillboardNode
+from node import Node, BillboardNode, ZAxisBillboardNode
 from sprite import Sprite
 from ribbon import Engine
+
+from renderable import Renderable
+from renderer import Pass
 
 from particles import create_explosion
 
@@ -16,13 +19,17 @@ from copy import copy
 import math
 
 def bullet_factory(position, rotation, velocity, team):
-	e = Entity()
+	e = Entity('bullet')
 	
 	e.graphics = True
 	e.physics = True
 	
-	n = BillboardNode()
-	n.renderables.append( Sprite(0.5, 0.5, Resources.load_shader('data/shaders/unlit.shader'), Resources.load_texture('data/images/particle.png')) )
+	n = ZAxisBillboardNode()
+	
+	n2 = Node(n)
+	n2.renderables.append( Renderable( Sprite(1.0, 2.0), Resources.load_shader('data/shaders/unlit.shader'), [Resources.load_texture('data/images/laser.png')], Pass.flares) )
+	n2.model.rotate_axis(-math.pi/2, Vector3(1, 0, 0))
+	
 	e.node = n
 		
 	e.position = position
@@ -37,7 +44,6 @@ def bullet_factory(position, rotation, velocity, team):
 	e.max_acceleration = 20.0
 	
 	e.mass = 0.001 # 1 kg
-	e.damping = 0.995
 	
 	e.lifetime = 0.75
 	e.remove_on_collide = True
@@ -47,14 +53,13 @@ def bullet_factory(position, rotation, velocity, team):
 	return e
 
 def missile_factory(position, rotation, velocity, team):
-	e = Entity()
+	e = Entity('missile')
 	
 	e.graphics = True
 	e.physics = True
 	e.ai = 'missile'
 	
-	n = BillboardNode()
-	n.renderables.append( Sprite(1, 1, Resources.load_shader('data/shaders/unlit.shader'), Resources.load_texture('data/images/burst.png')) )
+	n = Node()
 	e.node = n
 		
 	e.position = copy(position)
@@ -64,18 +69,17 @@ def missile_factory(position, rotation, velocity, team):
 	
 	e.throttle = 1.0
 	
-	e.min_acceleration = 20.0
 	e.max_acceleration = 80.0
 	
-	e.turn_rate = 0.125
+	e.turn_rate = 2.5
 	
 	e.mass = 0.05 # 50 kg
-	e.damping = 0.995
+	e.extents = Vector3(5.0, 5.0, 5.0)
 	
 	e.lifetime = 10.0
 	e.remove_on_collide = True
 	
-	e.engines = [Engine(e, Vector3(0, 0, -1))]
+	e.engines = [Engine(e, Vector3(0, 0, -1), 1.0, [Resources.load_texture('data/images/trail_missile.png'), Resources.load_texture('data/images/burst.png')])]
 	
 	e.team = team
 	

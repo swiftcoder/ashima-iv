@@ -19,20 +19,19 @@ class FighterAI(AINode):
 		potential = self.find_targets()
 		
 		if len(potential):
-			self.target = potential[-1][1]
+			self.target = potential[-1][2]
 			self.last_acquire = 0.0
 	
 	def get_force(self, target, repulse=True):
 		diff = target.position - self.entity.position
 		l = abs(diff)
 		dir = diff/l
-		
-		e = utility.vector_abs(dir).dot(target.extents)
-		d = (l - e) / 10
-		
+				
 		if repulse:
+			e = utility.vector_abs(dir).dot(target.extents)
+			d = (l - e) / 10
 			return -diff/math.pow(d, 3)
-		return diff/d
+		return 10*diff/l
 	
 	def update(self, dt):
 		force = Vector3()

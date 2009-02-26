@@ -1,6 +1,7 @@
 
 import pyglet
 from pyglet.gl import *
+from drawable import Drawable
 from renderable import Renderable
 from renderer import Pass
 
@@ -10,6 +11,9 @@ from graphics import Graphics
 
 from random import random
 from euclid import Vector3
+
+from node import BillboardNode
+from sprite import Sprite
 
 class Particle(Structure):
 	pass
@@ -32,12 +36,8 @@ class Dummy:
 		self.norm = norm
 		self.life = 1.0
 
-class Ribbon(Renderable):
+class Ribbon(Drawable):
 	def __init__(self, capacity, decay, cycles):
-		Renderable.__init__(self, Resources.load_shader('data/shaders/ribbon.shader'), [Resources.load_texture('data/images/trail3.png')])
-		
-		self.render_pass = Pass.transparent
-		
 		self.capacity = capacity
 		
 		self.decay = decay
@@ -117,7 +117,7 @@ class Ribbon(Renderable):
 		glBindBuffer(GL_ARRAY_BUFFER, 0)
 
 class Engine:	
-	def __init__(self, ship, offset):
+	def __init__(self, ship, offset, size, textures):
 		self.ship = ship
 		self.offset = offset
 		
@@ -125,14 +125,21 @@ class Engine:
 		
 		self.count = 50
 		
+		self.sprite = BillboardNode(ship.node)
+		self.sprite.model.translate(*self.offset)
+		self.sprite.renderables.append( Renderable( Sprite(size, size), Resources.load_shader('data/shaders/unlit.shader'), [textures[1]], Pass.flares) )
+		
 		self.ribbon = Ribbon(self.count, 0.5, 2)
-		Graphics.root.renderables.append(self.ribbon)
+		self.r = Renderable(self.ribbon, Resources.load_shader('data/shaders/ribbon.shader'), [textures[0]], Pass.trails)
+		
+		Graphics.root.renderables.append( self.r )
 				
 		World.add_handlers(self.on_update)
 	
 	def on_remove(self, ship):
 		if ship == self.ship:
-			Graphics.root.renderables.remove(self.ribbon)
+			Graphics.root.renderables.remove(self.r)
+			self.sprite.parent = None
 			World.remove_handlers(self.on_update)
 	
 	def on_update(self, dt):

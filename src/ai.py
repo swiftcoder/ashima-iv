@@ -39,11 +39,13 @@ class AINode:
 	
 	def find_targets(self):
 		pos = self.entity.position
+		dir = self.entity.rotation*Vector3(0, 0, 1)
 		
 		targets = []
 		for p in Teams.not_in_team(self.entity.team):
-			dist = abs(pos - p.position)
-			targets.append( (dist, p) )
+			diff = pos - p.position
+			dist = abs(diff)
+			targets.append( (dist, dir.dot(diff/dist), p) )
 		
 		targets.sort()
 		return targets

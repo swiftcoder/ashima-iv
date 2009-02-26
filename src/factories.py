@@ -31,8 +31,11 @@ def create_camera(camera):
 	
 	return e
 
+def engine(entity, offset, size):
+	return Engine(entity, offset, size, [Resources.load_texture('data/images/trail_ship.png'), Resources.load_texture('data/images/flare.png')])
+
 def create_anaconda(ai=True):
-	e = Entity()
+	e = Entity('anaconda')
 	
 	e.graphics = True
 	e.physics = True
@@ -57,7 +60,7 @@ def create_anaconda(ai=True):
 	e.mass = 5.0
 	e.extents = Vector3(8, 3, 10)
 	
-	e.engines = [Engine(e, Vector3(0, 0.125, 0))]
+	e.engines = [engine(e, Vector3(0, 0.125, 0), 1.0)]
 
 	e.primary_weapon = Weapon(e, bullet_factory, 0.25)
 	e.secondary_weapon = Weapon(e, missile_factory, 1.0)
@@ -68,7 +71,7 @@ def create_anaconda(ai=True):
 	return e
 
 def create_viper(ai=True):
-	e = Entity()
+	e = Entity('viper')
 	
 	e.graphics = True
 	e.physics = True
@@ -93,7 +96,7 @@ def create_viper(ai=True):
 	e.mass = 7.5
 	e.extents = Vector3(8, 6, 10)
 	
-	e.engines = [Engine(e, Vector3(-1.3, 1.0, -5.5)), Engine(e, Vector3(1.3, 1.0, -5.5))]
+	e.engines = [engine(e, Vector3(-1.3, 1.0, -6), 2.0), engine(e, Vector3(1.3, 1.0, -6), 2.0)]
 
 	e.primary_weapon = Weapon(e, bullet_factory, 0.25)
 	e.secondary_weapon = Weapon(e, missile_factory, 1.0)
@@ -104,7 +107,7 @@ def create_viper(ai=True):
 	return e
 
 def create_hammerfall():
-	e = Entity()
+	e = Entity('hammerfall')
 	
 	e.graphics = True
 	e.physics = True
@@ -125,6 +128,6 @@ def create_hammerfall():
 	e.mass = 40.0
 	e.extents = Vector3(80, 40, 200)
 	
-	e.engines = [Engine(e, Vector3(0, 0, -100))]
+	e.engines = [engine(e, Vector3(0, -1, -105), 7.0), engine(e, Vector3(21, -1, -105), 7.0), engine(e, Vector3(-21, -1, -105), 7.0)]
 	
 	return e

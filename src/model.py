@@ -1,13 +1,12 @@
 
 import pyglet
+from drawable import Drawable
 from renderable import Renderable
 
 import ode
 
-class Model(Renderable):
-	def __init__(self, shader, textures, file, physics=True):
-		Renderable.__init__(self, shader, textures)
-		
+class Model(Drawable):
+	def __init__(self, file, physics=True):		
 		self.trimesh = None
 		
 		self._load(file, physics)
@@ -90,7 +89,7 @@ class Model(Renderable):
 		f.close()
 		
 		if (data['version'] == 1):
-			p = Class(Resources.load_shader(data['shader']), [Resources.load_texture(t) for t in data['textures']], data['model'])
+			p = Renderable( Class(data['model']), Resources.load_shader(data['shader']), [Resources.load_texture(t) for t in data['textures']])
 			return p
 		
 		return None

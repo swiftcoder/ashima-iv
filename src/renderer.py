@@ -4,9 +4,14 @@ from euclid import Matrix3, Matrix4
 
 class Pass:
 	sky = 0
-	solid = 1
-	transparent = 2
-	overlay = 3
+	background = 1
+	
+	solid = 5
+	
+	flares = 6
+	trails = 7
+	
+	overlay = 25
 
 class _Renderer:
 	def __init__(self):
@@ -17,7 +22,7 @@ class _Renderer:
 		q.append( (transform, camera.view, camera.proj, renderable) )
 	
 	def render_all(self):
-		for p, q in self.queues.iteritems():
+		for p, q in self.queues.items():
 			for i in q:
 				self.render_item(*i)
 			

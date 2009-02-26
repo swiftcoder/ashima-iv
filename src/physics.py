@@ -13,8 +13,8 @@ class _Physics:
 		
 		self.world = ode.World()
 		
-		self.world.setERP(0.1)
-		self.world.setCFM(0.1)
+		self.world.setERP(0.2)
+		#self.world.setCFM(0.1)
 		
 		self.world.setLinearDamping(0.1)
 		self.world.setAngularDamping(0.1)
@@ -81,7 +81,7 @@ class _Physics:
 			entity.roll_right = new.instancemethod(lambda s: roll(s, 1), entity, Entity)
 			
 			def turn_towards(self, dir):
-				Physics.Nodes[self].body.addTorque(dir.normalized()*entity.turn_rate)
+				Physics.Nodes[self].body.addTorque(dir*entity.turn_rate)
 			entity.turn_towards = new.instancemethod(turn_towards, entity, Entity)
 				
 			def set_pos(self, pos):
@@ -97,7 +97,7 @@ class _Physics:
 			self.body.setMass(M)
 			
 			if entity.has('model'):
-				self.geom = ode.GeomTriMesh(entity.model.trimesh, space)
+				self.geom = ode.GeomTriMesh(entity.model.drawable.trimesh, space)
 			else:
 				self.geom = ode.GeomBox(space, entity.extents)
 			self.geom.setBody(self.body)
@@ -124,13 +124,6 @@ class _Physics:
 			thrust = entity.min_acceleration + entity.throttle*(entity.max_acceleration - entity.min_acceleration)
 			self.body.addRelForce(Vector3(0, 0, 1)*thrust)
 			
-			'''if entity._yaw != 0:
-				self.body.addRelTorque(Vector3(0, entity._yaw, 0)*entity.turn_rate)
-			if entity._pitch != 0:
-				self.body.addRelTorque(Vector3(entity._pitch, 0, 0)*entity.turn_rate)
-			if entity._roll != 0:
-				self.body.addRelTorque(Vector3(0, 0, entity._roll)*entity.turn_rate)'''
-			
 			self.body.addRelTorque(Vector3(entity._pitch, entity._yaw, entity._roll)*entity.turn_rate)
 			
 			entity._yaw, entity._pitch, entity._roll = 0, 0, 0
@@ -148,21 +141,25 @@ class _Physics:
 		# Check if the objects do collide
 		contacts = ode.collide(geom1, geom2)
 		
-		b1, b2 = geom1.getBody(), geom2.getBody()
-		
-		if b1.entity.remove_on_collide or b2.entity.remove_on_collide:
-			if b1.entity.remove_on_collide:
-				b1.entity.remove_from_world = True
-			if b2.entity.remove_on_collide:
-				b2.entity.remove_from_world = True
-		else:
-			# Create contact joints
-			world, contactgroup = args
-			for c in contacts:
-				c.setBounce(0.2)
-				c.setMu(0)
-				j = ode.ContactJoint(world, contactgroup, c)
-				j.attach(b1, b2)
+		if len(contacts):
+			b1, b2 = geom1.getBody(), geom2.getBody()
+			
+			#print 'collision between', b1.entity.name, 'and', b2.entity.name, len(contacts), 'contacts'
+			
+			if b1.entity.remove_on_collide or b2.entity.remove_on_collide:
+				if b1.entity.remove_on_collide:
+					b1.entity.remove_from_world = True
+				if b2.entity.remove_on_collide:
+					b2.entity.remove_from_world = True
+			else:
+				# Create contact joints
+				world, contactgroup = args
+				for c in contacts:
+					c.setMu(1000.0)
+					#c.setBounce(0.9)
+					#c.setMode(ode.ContactBounce)
+					j = ode.ContactJoint(world, contactgroup, c)
+					j.attach(b1, b2)
 	
 	def on_update(self, dt):		
 		for k, v in self.Nodes.iteritems():

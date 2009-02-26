@@ -8,6 +8,9 @@ import utility
 
 import math
 
+def predicate(a, b):
+	return cmp(a[1], b[1])
+
 class MissileAI(AINode):
 	def __init__(self, entity):
 		AINode.__init__(self, entity)
@@ -18,27 +21,35 @@ class MissileAI(AINode):
 		potential = self.find_targets()
 		
 		if len(potential):
-			self.target = potential[0][1]
+			potential.sort(predicate)
+			self.target = potential[0][2]
+			#print 'target aquired: ', self.target.name
 	
 	def get_force(self, target, repulse=True):
-		diff = target.position - self.entity.position
+		#v = abs(self.entity.linear_velocity + target.linear_velocity)
+		#f = abs(self.entity.linear_velocity)/self.entity.max_acceleration*self.entity.mass
+		f = 1.0
+		
+		t = target.position + target.linear_velocity*f
+		e = self.entity.position + self.entity.linear_velocity*f
+		
+		diff = t - e
 		l = abs(diff)
 		dir = diff/l
-		
-		e = utility.vector_abs(dir).dot(target.extents)
-		d = (l - e) / 10
-		
+				
 		if repulse:
-			return -diff/math.pow(d, 3)
-		return diff/d
+			extents = utility.vector_abs(dir).dot(target.extents)
+			d = (l - 2*extents) / 10
+			return -diff/math.pow(d, 5)
+		return 10*diff/l
 	
 	def update(self, dt):
 		force = Vector3()
 				
 		if not self.target:
 			self.acquire_target()
-		else:
-			force += self.get_force(self.target, False)
+		
+		force += self.get_force(self.target, False)
 		
 		avoid = Teams.all()
 		for a in avoid:
@@ -47,10 +58,10 @@ class MissileAI(AINode):
 		
 		dir = self.entity.rotation*Vector3(0, 0, 1)
 		
-		diff = utility.rotation_to(dir, force.normalized())
+		diff = utility.rotation_to(dir, force)
 		angle, axis = diff.get_angle_axis()
 		
-		self.entity.turn_towards( axis )
+		self.entity.turn_towards( axis*angle )
 
 def missile_ai_factory(entity):
 	return MissileAI(entity)

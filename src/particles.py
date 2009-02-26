@@ -1,6 +1,7 @@
 
 import pyglet
 from pyglet.gl import *
+from drawable import Drawable
 from renderable import Renderable
 from renderer import Pass
 
@@ -26,12 +27,8 @@ Particle._fields_ = [
 	('life', c_float)
 ]
 	
-class Particles(Renderable):
-	def __init__(self, capacity):
-		Renderable.__init__(self, Resources.load_shader('data/shaders/particles.shader'), [Resources.load_texture('data/images/burst2.png')])
-		
-		self.render_pass = Pass.transparent
-		
+class Particles(Drawable):
+	def __init__(self, capacity):		
 		self.capacity = capacity
 		self.count = 0
 		
@@ -116,7 +113,9 @@ class Explosion:
 		self.last = 0.0
 		
 		self.particles = Particles(self.count)
-		self.entity.node.renderables.append(self.particles)
+		self.p = Renderable(self.particles, Resources.load_shader('data/shaders/particles.shader'), [Resources.load_texture('data/images/burst2.png')], Pass.flares)
+		
+		self.entity.node.renderables.append(self.p)
 		
 		for i in range(self.count/2):
 			vel = Vector3(random()*2 - 1, random()*2 - 1, random()*2 - 1).normalized()*self.force*random()

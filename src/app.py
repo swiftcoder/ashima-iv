@@ -44,7 +44,7 @@ World.add(ship)
 
 for i in range(4, 0, -1):
 	ship = factories.create_anaconda()
-	ship.position = Vector3(i*5, i*10, i*10 + 250)
+	ship.position = Vector3(i*5, i*10 + 30, i*10 + 400)
 	ship.team = 'red'
 	World.add(ship)
 
@@ -81,7 +81,7 @@ def init():
 	cam = factories.create_camera(camera)
 	World.add(cam)
 		
-	tether = Tether(cam, ship, Vector3(0, 5, -16), Vector3(0, 0, 16))
+	tether = Tether(cam, ship, Vector3(-3, 5, -16), Vector3(0, 0, 16))
 
 	sky = SkyNode(cam.node)
 	sphere = Resources.load_model('data/models/sky.model')
