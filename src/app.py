@@ -82,7 +82,9 @@ def init():
 	World.add(cam)
 		
 	tether = Tether(cam, ship, Vector3(-3, 5, -16), Vector3(0, 0, 16))
-
+	
+	crosshairs = factories.cross_hairs(ship)
+	
 	sky = SkyNode(cam.node)
 	sphere = Resources.load_model('data/models/sky.model')
 	sphere.render_pass = Pass.sky

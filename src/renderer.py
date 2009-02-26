@@ -6,12 +6,12 @@ class Pass:
 	sky = 0
 	background = 1
 	
-	solid = 5
+	solid = 2
 	
-	flares = 6
-	trails = 7
+	flares = 3
+	trails = 4
 	
-	overlay = 25
+	overlay = 5
 
 class _Renderer:
 	def __init__(self):
@@ -26,7 +26,7 @@ class _Renderer:
 			for i in q:
 				self.render_item(*i)
 			
-			if p == Pass.sky:
+			if p == Pass.sky or p == Pass.trails:
 				glClear(GL_DEPTH_BUFFER_BIT)
 		
 		self.queues = {}

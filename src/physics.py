@@ -61,6 +61,11 @@ class _Physics:
 				entity.mass = 1.0
 			if not entity.has('extents'):
 				entity.extents = Vector3(1, 1, 1)
+
+			if not entity.has('category_mask'):
+				entity.category_mask = 0xffffffff
+			if not entity.has('collide_mask'):
+				entity.collide_mask = 0xffffffff
 			
 			if not entity.has('remove_on_collide'):
 				entity.remove_on_collide = False
@@ -101,6 +106,9 @@ class _Physics:
 			else:
 				self.geom = ode.GeomBox(space, entity.extents)
 			self.geom.setBody(self.body)
+			
+			self.geom.setCategoryBits(entity.category_mask)
+			self.geom.setCollideBits(entity.collide_mask)
 			
 			self.body.setPosition(entity.position)
 			self.body.setLinearVel(entity.linear_velocity)

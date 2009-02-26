@@ -13,10 +13,12 @@ from renderer import Pass
 
 from particles import create_explosion
 
-from euclid import Vector3
+from euclid import Vector3, Quaternion
 
 from copy import copy
 import math
+
+from random import random
 
 def bullet_factory(position, rotation, velocity, team):
 	e = Entity('bullet')
@@ -31,25 +33,25 @@ def bullet_factory(position, rotation, velocity, team):
 	n2.model.rotate_axis(-math.pi/2, Vector3(1, 0, 0))
 	
 	e.node = n
-		
-	e.position = position
-		
+	
+	rot = Quaternion.new_rotate_axis(random()*math.pi/32.0, Vector3(random(), random(), random()))
+	
 	e.position = copy(position)
-	e.rotation = copy(rotation)
+	e.rotation = copy(rotation) * rot
 	
 	e.linear_velocity = copy(velocity)
 	
 	e.throttle = 1.0
 	
-	e.max_acceleration = 20.0
+	e.max_acceleration = 2.5
 	
 	e.mass = 0.001 # 1 kg
 	
 	e.lifetime = 0.75
+	
 	e.remove_on_collide = True
-	
-	e.team = team
-	
+	e.category_mask = 0x0
+		
 	return e
 
 def missile_factory(position, rotation, velocity, team):
@@ -77,7 +79,9 @@ def missile_factory(position, rotation, velocity, team):
 	e.extents = Vector3(5.0, 5.0, 5.0)
 	
 	e.lifetime = 10.0
+	
 	e.remove_on_collide = True
+	e.category_mask = 0x0
 	
 	e.engines = [Engine(e, Vector3(0, 0, -1), 1.0, [Resources.load_texture('data/images/trail_missile.png'), Resources.load_texture('data/images/burst.png')])]
 	

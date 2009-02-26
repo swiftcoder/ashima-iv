@@ -31,6 +31,13 @@ def create_camera(camera):
 	
 	return e
 
+def cross_hairs(ship):
+	r = Renderable(Sprite(1, 1), Resources.load_shader('data/shaders/unlit.shader'), [Resources.load_texture('data/images/lock.png')], Pass.overlay)
+	
+	n = BillboardNode(ship.node)
+	n.renderables.append(r)
+	n.model.translate(0, 0, 35)
+
 def engine(entity, offset, size):
 	return Engine(entity, offset, size, [Resources.load_texture('data/images/trail_ship.png'), Resources.load_texture('data/images/flare.png')])
 
@@ -101,8 +108,8 @@ def create_viper(ai=True):
 	e.primary_weapon = Weapon(e, bullet_factory, 0.25)
 	e.secondary_weapon = Weapon(e, missile_factory, 1.0)
 		
-	e.fire_primary = new.instancemethod(lambda s: s.primary_weapon.fire(Vector3(0, 0, 20)), e, Entity)
-	e.fire_secondary = new.instancemethod(lambda s: s.secondary_weapon.fire(Vector3(0, 0, 20)), e, Entity)
+	e.fire_primary = new.instancemethod(lambda s: s.primary_weapon.fire(Vector3(0, 0, 15)), e, Entity)
+	e.fire_secondary = new.instancemethod(lambda s: s.secondary_weapon.fire(Vector3(0, 0, 15)), e, Entity)
 	
 	return e
 

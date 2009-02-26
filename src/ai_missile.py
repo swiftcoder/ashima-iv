@@ -51,10 +51,10 @@ class MissileAI(AINode):
 		
 		force += self.get_force(self.target, False)
 		
-		avoid = Teams.all()
-		for a in avoid:
-			if not a in [self.entity, self.target]:
-				force += self.get_force(a)
+		#avoid = Teams.all()
+		#for a in avoid:
+		#	if not a in [self.entity, self.target]:
+		#		force += self.get_force(a)
 		
 		dir = self.entity.rotation*Vector3(0, 0, 1)
 		
