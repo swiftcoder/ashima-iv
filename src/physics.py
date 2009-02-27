@@ -23,7 +23,7 @@ class _Physics:
 		self.world = ode.World()
 		
 		self.world.setERP(0.2)
-		self.world.setCFM(0.1)
+		self.world.setCFM(0.0001)
 		
 		self.world.setLinearDamping(0.1)
 		self.world.setAngularDamping(0.1)
@@ -163,11 +163,6 @@ class _Physics:
 			
 			#print 'collision between', b1.entity.name, 'and', b2.entity.name, len(contacts), 'contacts'
 			
-			'''if b1.entity.remove_on_collide:
-				b1.entity.remove_from_world = True
-			elif b2.entity.remove_on_collide:
-				b2.entity.remove_from_world = True
-			else:'''
 			# Create contact joints
 			world, contactgroup = args
 			for c in contacts:
@@ -176,11 +171,11 @@ class _Physics:
 				#c.setMode(ode.ContactBounce)
 				j = ode.ContactJoint(world, contactgroup, c)
 				j.attach(b1, b2)
-				
-				if b1.entity.has('health') and b1.entity.health:
-					b1.entity.deal_damage(b2.entity.damage)
-				elif b2.entity.has('health') and b1.entity.health:
-					b2.entity.deal_damage(b1.entity.damage)
+			
+			if b1.entity.has('health') and b1.entity.health:
+				b1.entity.deal_damage(b2.entity)
+			if b2.entity.has('health') and b2.entity.health:
+				b2.entity.deal_damage(b1.entity)
 	
 	def on_update(self, dt):		
 		for k, v in self.Nodes.iteritems():

@@ -54,7 +54,7 @@ World.set_player(ship)
 
 @ship.event
 def on_remove(ship):
-	del control
+	print 'defeat'
 
 fps_display = pyglet.clock.ClockDisplay()
 

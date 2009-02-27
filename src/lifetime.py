@@ -24,7 +24,7 @@ class _Lifetime:
 	def on_update(self, dt):
 		for e in self.nodes:
 			e.lifetime -= dt
-			if e.lifetime < 0.0:
+			if e.lifetime < 0.0 and (not e.has('remove_from_world') or not e.remove_from_world):
 				e.remove_from_world = True
 
 Lifetime = _Lifetime()

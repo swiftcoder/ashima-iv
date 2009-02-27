@@ -42,7 +42,7 @@ def bullet_factory(position, rotation, velocity, team):
 	
 	e.node = n
 	
-	rot = Quaternion.new_rotate_axis(random()*math.pi/32.0, Vector3(random(), random(), random()))
+	rot = Quaternion.new_rotate_axis(random()*math.pi/128.0, Vector3(random(), random(), random()))
 	
 	e.position = copy(position)
 	e.rotation = copy(rotation) * rot
@@ -51,7 +51,7 @@ def bullet_factory(position, rotation, velocity, team):
 	
 	e.throttle = 1.0
 	
-	e.max_acceleration = 5.0
+	e.max_acceleration = 10.0
 	
 	e.mass = 0.001 # 1 kg
 	
@@ -62,6 +62,12 @@ def bullet_factory(position, rotation, velocity, team):
 	e.category_mask = (CollisionMask.team & (team == 'blue')) | CollisionMask.weapon
 	e.collide_mask = (CollisionMask.team & (team != 'blue'))
 		
+	@e.event
+	def on_death(entity):
+		e = create_explosion(entity.position, Vector3(), 40, 2.0, 0.0, 1.0)
+		World.add(e)
+		entity.remove_from_world = True
+	
 	return e
 
 def missile_factory(position, rotation, velocity, team):
@@ -107,11 +113,11 @@ def missile_factory(position, rotation, velocity, team):
 	
 	e.engines = [RibbonTrail(e, Vector3(0, 0, -1), Resources.load_texture('data/images/trail_missile.png'))]
 	
-	def on_remove(entity):
+	@e.event
+	def on_death(entity):
 		e = create_explosion(entity.position, Vector3(), 400, 5.0, 0.0, 1.0)
 		World.add(e)
-	
-	e.add_handlers(on_remove)
+		entity.remove_from_world = True
 	
 	return e
 

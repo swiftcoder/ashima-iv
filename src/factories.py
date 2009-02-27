@@ -71,6 +71,7 @@ def create_anaconda(position, team, ai=True):
 	e.max_life = 100
 	e.life = 100
 	e.damage = 1
+	e.recharge_rate = 2
 	
 	e.position = position
 	
@@ -86,7 +87,7 @@ def create_anaconda(position, team, ai=True):
 	e.max_acceleration = 3800.0 #8000.0
 	e.max_velocity = 4.0
 	
-	e.turn_rate = 550.0
+	e.turn_rate = 150.0
 	
 	e.mass = 5.0
 	e.extents = Vector3(8, 3, 10)
@@ -101,6 +102,13 @@ def create_anaconda(position, team, ai=True):
 
 	e.category_mask = (CollisionMask.team & (team == 'blue')) | CollisionMask.fighter
 	e.collide_mask = CollisionMask.all
+		
+	@e.event
+	def on_death(self):
+		e = create_explosion(self.position, Vector3(), 1000, 10.0, 0.0, 2.0)
+		World.add(e)
+		self.remove_from_world = True
+		print 'anaconda killed'
 	
 	return e
 
@@ -119,6 +127,7 @@ def create_viper(position, team, ai=True):
 	e.max_life = 250
 	e.life = 250
 	e.damage = 1
+	e.recharge_rate = 4
 	
 	e.position = position
 	
@@ -149,6 +158,13 @@ def create_viper(position, team, ai=True):
 	
 	e.category_mask = (CollisionMask.team & (team == 'blue')) | CollisionMask.fighter
 	e.collide_mask = CollisionMask.all
+	
+	@e.event
+	def on_death(self):
+		e = create_explosion(self.position, Vector3(), 1500, 15.0, 0.0, 2.0)
+		World.add(e)
+		self.remove_from_world = True
+		print 'viper killed'
 	
 	return e
 
@@ -188,6 +204,13 @@ def create_turret(parent, offset, team):
 	e.category_mask = CollisionMask.turret
 	e.collide_mask = CollisionMask.all ^ CollisionMask.ship
 	
+	@e.event
+	def on_death(self):
+		e = create_explosion(self.position, Vector3(), 1000, 14.0, 0.0, 2.0)
+		World.add(e)
+		self.remove_from_world = True
+		print 'turret killed'
+	
 	return e
 
 def create_hammerfall(position, team):
@@ -199,8 +222,8 @@ def create_hammerfall(position, team):
 	
 	e.health = True
 	
-	e.max_life = 10000
-	e.life = 10000
+	e.max_life = 1500
+	e.life = 1500
 	e.damage = 1
 	
 	e.position = position
@@ -229,8 +252,23 @@ def create_hammerfall(position, team):
 	e.collide_mask = CollisionMask.all ^ CollisionMask.turret
 	
 	@e.event
-	def on_add(entity):
-		for t in entity.turrets:
+	def on_add(self):
+		for t in self.turrets:
 			World.add(t)
+	
+	@e.event
+	def on_death(self):
+		e = create_explosion(self.position, Vector3(), 2000, 200.0, 0.0, 5.0)
+		World.add(e)
+		
+		self.damage = 10000
+		for t in self.turrets:
+			t.deal_damage(self)
+		self.damage = 1
+		
+		@e.event
+		def on_remove(e):
+			self.remove_from_world = True
+			print 'hammerfall killed'
 	
 	return e

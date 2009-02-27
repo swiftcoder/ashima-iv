@@ -16,7 +16,6 @@ class MissileAI(AINode):
 		AINode.__init__(self, entity)
 		
 		self.target = None
-		#self.last_acquire = 0.0
 	
 	def acquire_target(self):
 		potential = self.find_targets()
@@ -39,18 +38,17 @@ class MissileAI(AINode):
 	def update(self, dt):
 		force = Vector3()
 		
-		#self.last_acquire += dt
-		if not self.target: # or self.last_acquire > 1.0:
+		if not self.target:
 			self.acquire_target()
-			#self.last_acquire = 0.0
 		
-		dir = self.entity.rotation*Vector3(0, 0, 1)
-		force += self.get_force(self.target)		
-		
-		diff = utility.rotation_to(dir, force)
-		angle, axis = diff.get_angle_axis()
-		
-		self.entity.turn_towards( axis*angle )
+		if self.target:
+			dir = self.entity.rotation*Vector3(0, 0, 1)
+			force += self.get_force(self.target)		
+			
+			diff = utility.rotation_to(dir, force)
+			angle, axis = diff.get_angle_axis()
+			
+			self.entity.turn_towards( axis*angle )
 
 def missile_ai_factory(entity):
 	return MissileAI(entity)
