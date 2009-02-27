@@ -4,17 +4,21 @@ import pyglet
 
 import euclid
 
+from collections import defaultdict
+
 class Shader:
 	def __init__(self, vert = [], frag = []):
 		self.Handle = glCreateProgramObjectARB()
 	#	print 'program: ', self.Handle
 		self.Linked = False
+		self.uniforms = {}
 		
 		self.createShader(vert, GL_VERTEX_SHADER_ARB)
 		self.createShader(frag, GL_FRAGMENT_SHADER_ARB)
-		
+				
 		self.link()
-	
+		self.query_uniforms()
+			
 	def createShader(self, strings, type):
 		count = len(strings)
 		if count < 1:
@@ -52,7 +56,23 @@ class Shader:
 			print buffer.value
 		else:
 			self.Linked = True
+	
+	def query_uniforms(self):
+		count = GLint()
+		glGetObjectParameterivARB(self.Handle, GL_ACTIVE_UNIFORMS, byref(count))
 		
+		length = GLint()
+		glGetObjectParameterivARB(self.Handle, GL_ACTIVE_UNIFORM_MAX_LENGTH, byref(length))
+		
+		buf = create_string_buffer(length.value)
+		for i in range(count.value):
+			glGetActiveUniformARB(self.Handle, i, length, None, None, None, buf)
+			self.uniforms[buf.value] = i
+		
+		del buf
+		
+		#print self.uniforms
+	
 	def bind(self):
 		if self.Linked:
 			glUseProgramObjectARB(self.Handle)
@@ -62,34 +82,29 @@ class Shader:
 			glUseProgramObjectARB(0)
 	
 	def uniform(self, name, vals):
-		if self.Linked:
-			if len(vals) in range(1, 5):
-				{ 1 : glUniform1fARB,
-					2 : glUniform2fARB,
-					3 : glUniform3fARB,
-					4 : glUniform4fARB
-				}[len(vals)](glGetUniformLocationARB(self.Handle, name), *vals)
-	
-	def uniform_matrix(self, name, mat):
-		if isinstance(mat, euclid.Matrix3):
-			l = 9
-		elif isinstance(mat, euclid.Matrix4):
-			l = 16
-		else:
-			l = len(mat)
+		loc = self.uniforms[name]
 		
-		if self.Linked:
-			if l in [4, 9, 16]:
-				{
-					4: glUniformMatrix2fvARB,
-					9: glUniformMatrix3fvARB,
-					16: glUniformMatrix4fvARB,
-				}[l](glGetUniformLocationARB(self.Handle, name), 1, False, (c_float * l)(*mat))
+		if len(vals) in range(1, 5):
+			{ 1 : glUniform1fARB,
+				2 : glUniform2fARB,
+				3 : glUniform3fARB,
+				4 : glUniform4fARB
+			}[len(vals)](loc, *vals)
+	
+	def uniform_matrix_3x3(self, name, mat):
+		loc = self.uniforms[name]
+		
+		glUniformMatrix3fvARB(loc, 1, False, (c_float * 16)(*mat))
+	
+	def uniform_matrix_4x4(self, name, mat):
+		loc = self.uniforms[name]
+		
+		glUniformMatrix4fvARB(loc, 1, False, (c_float * 16)(*mat))
 	
 	def texture(self, unit):
-		if self.Linked:
-			glUniform1iARB(glGetUniformLocationARB(self.Handle, 'tex' + str(unit)), unit)
-
+		loc = self.uniforms['tex' + str(unit)]
+		
+		glUniform1iARB(loc, unit)
 	
 	@classmethod
 	def load(Class, name):

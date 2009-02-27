@@ -38,29 +38,38 @@ class _Renderer:
 		s = renderable.shader
 		
 		s.bind()
-		s.uniform_matrix('model_matrix', model)
-		s.uniform_matrix('view_matrix', view)
-		s.uniform_matrix('proj_matrix', proj)
-		s.uniform_matrix('model_view_matrix', model_view)
-		s.uniform_matrix('model_view_proj_matrix', model_view_proj)
 		
-		m, v = Matrix3(), model
-		m.a, m.b, m.c = v.a, v.b, v.c
-		m.e, m.f, m.g = v.e, v.f, v.g
-		m.i, m.j, m.k = v.i, v.j, v.k
-		s.uniform_matrix('model_normal_matrix', m)
+		if 'model_matrix' in s.uniforms:
+			s.uniform_matrix_4x4('model_matrix', model)
+		if 'view_matrix' in s.uniforms:
+			s.uniform_matrix_4x4('view_matrix', view)
+		if 'proj_matrix' in s.uniforms:
+			s.uniform_matrix_4x4('proj_matrix', proj)
+		if 'model_view_matrix' in s.uniforms:
+			s.uniform_matrix_4x4('model_view_matrix', model_view)
+		if 'model_view_proj_matrix' in s.uniforms:
+			s.uniform_matrix_4x4('model_view_proj_matrix', model_view_proj)
 		
-		m, v = Matrix3(), model
-		m.a, m.b, m.c = v.a, v.e, v.i
-		m.e, m.f, m.g = v.b, v.f, v.j
-		m.i, m.j, m.k = v.c, v.g, v.k
-		s.uniform_matrix('inv_model_normal_matrix', m)
+		if 'model_normal_matrix' in s.uniforms:
+			m, v = Matrix3(), model
+			m.a, m.b, m.c = v.a, v.b, v.c
+			m.e, m.f, m.g = v.e, v.f, v.g
+			m.i, m.j, m.k = v.i, v.j, v.k
+			s.uniform_matrix_3x3('model_normal_matrix', m)
 		
-		m, v = Matrix3(), model_view
-		m.a, m.b, m.c = v.a, v.b, v.c
-		m.e, m.f, m.g = v.e, v.f, v.g
-		m.i, m.j, m.k = v.i, v.j, v.k
-		s.uniform_matrix('model_view_normal_matrix', m)
+		if 'inv_model_normal_matrix' in s.uniforms:
+			m, v = Matrix3(), model
+			m.a, m.b, m.c = v.a, v.e, v.i
+			m.e, m.f, m.g = v.b, v.f, v.j
+			m.i, m.j, m.k = v.c, v.g, v.k
+			s.uniform_matrix_3x3('inv_model_normal_matrix', m)
+		
+		if 'model_view_normal_matrix' in s.uniforms:
+			m, v = Matrix3(), model_view
+			m.a, m.b, m.c = v.a, v.b, v.c
+			m.e, m.f, m.g = v.e, v.f, v.g
+			m.i, m.j, m.k = v.i, v.j, v.k
+			s.uniform_matrix_3x3('model_view_normal_matrix', m)
 		
 		textures = zip(range(len(renderable.textures)), renderable.textures)
 		
