@@ -4,8 +4,6 @@ import pyglet
 
 import euclid
 
-from collections import defaultdict
-
 class Shader:
 	def __init__(self, vert = [], frag = []):
 		self.Handle = glCreateProgramObjectARB()
@@ -64,25 +62,25 @@ class Shader:
 		length = GLint()
 		glGetObjectParameterivARB(self.Handle, GL_ACTIVE_UNIFORM_MAX_LENGTH, byref(length))
 		
+		l = GLint()
 		size = GLint()
 		_type = GLenum()
 		buf = create_string_buffer(length.value)
 		
 		for i in range(count.value):
-			glGetActiveUniformARB(self.Handle, i, length, None, byref(size), byref(_type), buf)
-			self.uniforms[buf.value] = i
+			glGetActiveUniformARB(self.Handle, i, length, byref(l), byref(size), byref(_type), buf)
+			loc = glGetUniformLocationARB(self.Handle, buf.value)
+			self.uniforms[buf.value] = loc
 		
 		del buf
 		
 		#print self.uniforms
 	
 	def bind(self):
-		if self.Linked:
-			glUseProgramObjectARB(self.Handle)
+		glUseProgramObjectARB(self.Handle)
 	
 	def unbind(self):
-		if self.Linked:
-			glUseProgramObjectARB(0)
+		glUseProgramObjectARB(0)
 	
 	def uniform(self, name, vals):
 		loc = self.uniforms[name]
@@ -97,11 +95,11 @@ class Shader:
 	def uniform_matrix_3x3(self, name, mat):
 		loc = self.uniforms[name]
 		
-		glUniformMatrix3fvARB(loc, 1, False, (c_float * 16)(*mat))
+		glUniformMatrix3fvARB(loc, 1, False, (c_float * 9)(*mat))
 	
 	def uniform_matrix_4x4(self, name, mat):
 		loc = self.uniforms[name]
-		
+			
 		glUniformMatrix4fvARB(loc, 1, False, (c_float * 16)(*mat))
 	
 	def texture(self, unit):

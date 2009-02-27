@@ -10,6 +10,7 @@ from physics import Physics
 from lifetime import Lifetime
 from teams import Teams
 from ai import AI
+from health import Health
 
 import ai_missile, ai_fighter, ai_turret
 
@@ -51,8 +52,9 @@ for i in range(2, 0, -1):
 control = Controller(ship)
 World.set_player(ship)
 
-#select = BillboardNode(Graphics.root)
-#select.renderables.append( Selection(0.125, 0.125, Resources.load_shader('data/shaders/unlit.shader'), Resources.load_texture('data/images/target.png')) )
+@ship.event
+def on_remove(ship):
+	del control
 
 fps_display = pyglet.clock.ClockDisplay()
 
@@ -98,25 +100,6 @@ delta_t = 0.0
 mouse_x = 0
 mouse_y = 0
 
-'''keymap = key.KeyStateHandler()
-Window.push_handlers(keymap)
-
-@Window.event
-def on_mouse_motion(x, y, dx, dy):
-	global mouse_x, mouse_y
-	mouse_x = x
-	mouse_y = y
-
-@Window.event
-def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
-	global mouse_x, mouse_y
-	mouse_x = x
-	mouse_y = y
-
-@Window.event
-def on_mouse_press(x, y, button, modifiers): 
-	p = utility.pick(camera, [0, 0, Window.width, Window.height], mouse_x, mouse_y)
-	print p, abs(p)'''
 	
 def update(dt):
 	global elapsed_t, delta_t
@@ -136,13 +119,7 @@ def on_draw():
 	sunlight.bind()
 	sunlight.uniform('sunDir', Vector3(-1, 1, 0).normalize())
 	sunlight.unbind()
-	
-	#p = utility.pick(camera, [0, 0, Window.width, Window.height], mouse_x, mouse_y)
-	#if abs(p) < 1000:
-	#	print select.model
-	#	print select.transform
-	#	select.model = Matrix4.new_translate(*p)
-	
+		
 	World.perform_frame()
 	
 	glMatrixMode(GL_PROJECTION) 

@@ -163,20 +163,24 @@ class _Physics:
 			
 			#print 'collision between', b1.entity.name, 'and', b2.entity.name, len(contacts), 'contacts'
 			
-			if b1.entity.remove_on_collide or b2.entity.remove_on_collide:
-				if b1.entity.remove_on_collide:
-					b1.entity.remove_from_world = True
-				if b2.entity.remove_on_collide:
-					b2.entity.remove_from_world = True
-			else:
-				# Create contact joints
-				world, contactgroup = args
-				for c in contacts:
-					c.setMu(1000.0)
-					#c.setBounce(0.9)
-					#c.setMode(ode.ContactBounce)
-					j = ode.ContactJoint(world, contactgroup, c)
-					j.attach(b1, b2)
+			'''if b1.entity.remove_on_collide:
+				b1.entity.remove_from_world = True
+			elif b2.entity.remove_on_collide:
+				b2.entity.remove_from_world = True
+			else:'''
+			# Create contact joints
+			world, contactgroup = args
+			for c in contacts:
+				c.setMu(1000.0)
+				#c.setBounce(0.9)
+				#c.setMode(ode.ContactBounce)
+				j = ode.ContactJoint(world, contactgroup, c)
+				j.attach(b1, b2)
+				
+				if b1.entity.has('health') and b1.entity.health:
+					b1.entity.deal_damage(b2.entity.damage)
+				elif b2.entity.has('health') and b1.entity.health:
+					b2.entity.deal_damage(b1.entity.damage)
 	
 	def on_update(self, dt):		
 		for k, v in self.Nodes.iteritems():

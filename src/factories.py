@@ -66,6 +66,12 @@ def create_anaconda(position, team, ai=True):
 	if ai:
 		e.ai = 'fighter'
 	
+	e.health = True
+	
+	e.max_life = 100
+	e.life = 100
+	e.damage = 1
+	
 	e.position = position
 	
 	e.model = Resources.load_model('data/models/anaconda.model')
@@ -108,6 +114,12 @@ def create_viper(position, team, ai=True):
 	if ai:
 		e.ai = 'fighter'
 	
+	e.health = True
+	
+	e.max_life = 250
+	e.life = 250
+	e.damage = 1
+	
 	e.position = position
 	
 	e.model = Resources.load_model('data/models/viper.model')
@@ -148,6 +160,12 @@ def create_turret(parent, offset, team):
 	e.ai = 'turret'
 	e.team = team
 	
+	e.health = True
+	
+	e.max_life = 80
+	e.life = 80
+	e.damage = 1
+	
 	e.model = Resources.load_model('data/models/turret.model')
 	
 	n = Node()
@@ -178,6 +196,12 @@ def create_hammerfall(position, team):
 	e.graphics = True
 	e.physics = True
 	e.team = team
+	
+	e.health = True
+	
+	e.max_life = 10000
+	e.life = 10000
+	e.damage = 1
 	
 	e.position = position
 	

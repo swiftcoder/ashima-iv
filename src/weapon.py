@@ -28,6 +28,12 @@ def bullet_factory(position, rotation, velocity, team):
 	e.graphics = True
 	e.physics = True
 	
+	e.health = True
+	
+	e.max_life = 1
+	e.life = 1
+	e.damage = 10
+	
 	n = ZAxisBillboardNode()
 	
 	n2 = Node(n)
@@ -64,6 +70,12 @@ def missile_factory(position, rotation, velocity, team):
 	e.graphics = True
 	e.physics = True
 	e.ai = 'missile'
+	
+	e.health = True
+	
+	e.max_life = 1
+	e.life = 1
+	e.damage = 60
 	
 	n = BillboardNode()
 	n.renderables.append( Renderable(Sprite(1, 1), Resources.load_shader('data/shaders/unlit.shader'), [Resources.load_texture('data/images/burst.png')]) )
