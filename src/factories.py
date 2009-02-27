@@ -34,11 +34,22 @@ def create_camera(camera):
 	return e
 
 def cross_hairs(ship):
-	r = Renderable(Sprite(1, 1), Resources.load_shader('data/shaders/unlit.shader'), [Resources.load_texture('data/images/lock.png')], Pass.overlay)
+	r = Renderable(Sprite(10, 10), Resources.load_shader('data/shaders/unlit.shader'), [Resources.load_texture('data/images/aim.png')], Pass.flares)
 	
 	n = BillboardNode(ship.node)
 	n.renderables.append(r)
-	n.model.translate(0, 0, 35)
+	n.model.translate(0, 0, 50)
+	
+	return n
+
+def aim_assist(camera):
+	r = Renderable(Sprite(0.25, 0.25), Resources.load_shader('data/shaders/unlit.shader'), [Resources.load_texture('data/images/lock.png')], Pass.overlay)
+	
+	n = BillboardNode(camera.node)
+	n.renderables.append(r)
+	n.model.translate(0, 0, -10)
+	
+	return n
 
 def engine(entity, offset, size, trail=True):
 	if trail:
@@ -74,7 +85,7 @@ def create_anaconda(position, team, ai=True):
 	e.mass = 5.0
 	e.extents = Vector3(8, 3, 10)
 	
-	e.engines = [engine(e, Vector3(0, 0.85, -5), 1.5)]
+	e.engines = [engine(e, Vector3(0, 0.85, -5), 1.0)]
 
 	e.primary_weapon = Weapon(e, bullet_factory, 0.25)
 	e.secondary_weapon = Weapon(e, missile_factory, 1.0)
@@ -116,7 +127,7 @@ def create_viper(position, team, ai=True):
 	e.mass = 7.5
 	e.extents = Vector3(8, 6, 10)
 	
-	e.engines = [engine(e, Vector3(-1.3, 1.0, -6), 2.0), engine(e, Vector3(1.3, 1.0, -6), 2.0)]
+	e.engines = [engine(e, Vector3(-1.3, 1.0, -6), 1.5), engine(e, Vector3(1.3, 1.0, -6), 1.5)]
 
 	e.primary_weapon = Weapon(e, bullet_factory, 0.25)
 	e.secondary_weapon = Weapon(e, missile_factory, 1.0)
@@ -166,7 +177,7 @@ def create_hammerfall(position, team):
 	
 	e.graphics = True
 	e.physics = True
-	#e.team = team
+	e.team = team
 	
 	e.position = position
 	

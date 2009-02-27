@@ -9,7 +9,7 @@ from euclid import Vector3, Quaternion, Matrix4
 
 class Tether:
 	
-	def __init__(self, entity, target, follow_offset, look_offset, stiffness = 200.0):
+	def __init__(self, entity, target, follow_offset, look_offset, stiffness = 250.0):
 		self.e, self.t, self.fo, self.lo = entity, target, follow_offset, look_offset
 		self.stiffness = stiffness
 		

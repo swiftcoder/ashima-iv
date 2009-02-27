@@ -69,14 +69,16 @@ def init():
 	global camera
 	camera = Camera(pi/4, aspect, 0.1, 100000.0)
 	
-	camera.view.rotatey(pi/3).translate(4, -0.5, -8)
+	#camera.view.rotatey(pi/3).translate(4, -0.5, -8)
 	
 	Graphics.camera = camera
 	
 	cam = factories.create_camera(camera)
 	World.add(cam)
-		
-	tether = Tether(cam, ship, Vector3(-3, 5, -16), Vector3(0, 0, 16))
+	
+	aim = factories.aim_assist(cam)
+	
+	tether = Tether(cam, ship, Vector3(-5, 8, -16), Vector3(0, 0, 65))
 	
 	crosshairs = factories.cross_hairs(ship)
 	

@@ -121,9 +121,9 @@ class RibbonTrail:
 		self.ship = ship
 		self.offset = offset
 				
-		self.count = 50
+		self.count = 15
 				
-		self.ribbon = Ribbon(self.count, 0.5, 2)
+		self.ribbon = Ribbon(self.count, 0.95, 1)
 		self.r = Renderable(self.ribbon, Resources.load_shader('data/shaders/ribbon.shader'), [texture], Pass.trails)
 		
 		Graphics.root.renderables.append( self.r )

@@ -8,6 +8,9 @@ import utility
 
 import math
 
+def filter_name(e):
+	return e[2].name != 'hammerfall'
+
 class FighterAI(AINode):
 	def __init__(self, entity):
 		AINode.__init__(self, entity)
@@ -17,6 +20,8 @@ class FighterAI(AINode):
 	
 	def acquire_target(self):
 		potential = self.find_targets()
+		
+		potential = filter(filter_name, potential)
 		
 		if len(potential):
 			self.target = potential[-1][2]

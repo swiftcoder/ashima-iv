@@ -10,7 +10,10 @@ class _Window(pyglet.window.Window):
 	
 	def __init__(self):
 		pyglet.window.Window.__init__(self, 1024, 640, 'Planets', vsync=True)
-				
+		
+		self.set_mouse_visible(False)
+		self.set_exclusive_mouse(True)
+		
 		self.inFullscreen = False
 		self.startup = True
 		self.shot = 0
