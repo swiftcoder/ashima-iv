@@ -11,7 +11,7 @@ from lifetime import Lifetime
 from teams import Teams
 from ai import AI
 
-import ai_missile, ai_fighter
+import ai_missile, ai_fighter, ai_turret
 
 import factories
 
@@ -37,24 +37,19 @@ from math import sin, cos, pi
 
 sunlight = Resources.load_shader('data/shaders/sunlight.shader')
 
-ship = factories.create_hammerfall()
-ship.position = Vector3(0, 0, 250)
-ship.team = 'red'
+ship = factories.create_hammerfall(Vector3(0, -250, 1200), 'red')
 World.add(ship)
 
 for i in range(4, 0, -1):
-	ship = factories.create_anaconda()
-	ship.position = Vector3(i*5, i*10 + 30, i*10 + 400)
-	ship.team = 'red'
+	ship = factories.create_anaconda(Vector3(i*5, i*10, i*10 + 200), 'red')
 	World.add(ship)
 
 for i in range(2, 0, -1):
-	ship = factories.create_viper(i != 1)
-	ship.position = Vector3(i*10, i*-10, i*10 + 5)
-	ship.team = 'blue'
+	ship = factories.create_viper(Vector3(i*40, i*-10, i*10 + 25), 'blue', i != 1)
 	World.add(ship)
 
 control = Controller(ship)
+World.set_player(ship)
 
 #select = BillboardNode(Graphics.root)
 #select.renderables.append( Selection(0.125, 0.125, Resources.load_shader('data/shaders/unlit.shader'), Resources.load_texture('data/images/target.png')) )

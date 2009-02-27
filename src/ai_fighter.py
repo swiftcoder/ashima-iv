@@ -48,6 +48,10 @@ class FighterAI(AINode):
 		
 		dir = self.entity.rotation*Vector3(0, 0, 1)
 		
+		dot = dir.dot( (self.target.position - self.entity.position).normalized() )
+		if abs(force) < 250 and dot > 0.75:
+			self.entity.fire_primary()
+		
 		diff = utility.rotation_to(dir, force.normalized())
 		angle, axis = diff.get_angle_axis()
 		

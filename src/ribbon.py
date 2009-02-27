@@ -116,30 +116,23 @@ class Ribbon(Drawable):
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(self.data), self.data)
 		glBindBuffer(GL_ARRAY_BUFFER, 0)
 
-class Engine:	
-	def __init__(self, ship, offset, size, textures):
+class RibbonTrail:	
+	def __init__(self, ship, offset, texture):
 		self.ship = ship
 		self.offset = offset
-		
-		self.ship.add_handlers(self.on_remove)
-		
+				
 		self.count = 50
-		
-		self.sprite = BillboardNode(ship.node)
-		self.sprite.model.translate(*self.offset)
-		self.sprite.renderables.append( Renderable( Sprite(size, size), Resources.load_shader('data/shaders/unlit.shader'), [textures[1]], Pass.flares) )
-		
+				
 		self.ribbon = Ribbon(self.count, 0.5, 2)
-		self.r = Renderable(self.ribbon, Resources.load_shader('data/shaders/ribbon.shader'), [textures[0]], Pass.trails)
+		self.r = Renderable(self.ribbon, Resources.load_shader('data/shaders/ribbon.shader'), [texture], Pass.trails)
 		
 		Graphics.root.renderables.append( self.r )
 				
+		self.ship.add_handlers(self.on_remove)
 		World.add_handlers(self.on_update)
 	
 	def on_remove(self, ship):
-		if ship == self.ship:
 			Graphics.root.renderables.remove(self.r)
-			self.sprite.parent = None
 			World.remove_handlers(self.on_update)
 	
 	def on_update(self, dt):
@@ -147,3 +140,15 @@ class Engine:
 		rot = self.ship.rotation
 		
 		self.ribbon.update_ribbon(dt, pos, rot)
+
+class EngineFlare:
+	def __init__(self, ship, offset, size, texture):
+		
+		self.sprite = BillboardNode(ship.node)
+		self.sprite.model.translate(*offset)
+		self.sprite.renderables.append( Renderable( Sprite(size, size), Resources.load_shader('data/shaders/unlit.shader'), [texture], Pass.flares) )
+		
+		ship.add_handlers(self.on_remove)
+	
+	def on_remove(self, ship):
+			self.sprite.parent = None

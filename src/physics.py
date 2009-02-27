@@ -7,6 +7,15 @@ import new
 
 import ode
 
+class CollisionMask:
+	team = 0x1
+	weapon = 0x2
+	turret = 0x4
+	fighter = 0x8
+	ship = 0x16
+	
+	all = 0xffffffff
+
 class _Physics:
 	def __init__(self):		
 		self.Nodes = {}
@@ -14,7 +23,7 @@ class _Physics:
 		self.world = ode.World()
 		
 		self.world.setERP(0.2)
-		#self.world.setCFM(0.1)
+		self.world.setCFM(0.1)
 		
 		self.world.setLinearDamping(0.1)
 		self.world.setAngularDamping(0.1)
@@ -189,3 +198,33 @@ class _Physics:
 
 Physics = _Physics()
 del _Physics
+
+class FixedJoint:
+	def __init__(self, entity1, entity2):
+		self.joint = ode.FixedJoint(Physics.world)
+		self.joint.attach(Physics.Nodes[entity1].body, Physics.Nodes[entity2].body)
+		self.joint.setFixed()
+
+class BallJoint:
+	def __init__(self, entity1, entity2, anchor):
+		self.joint = ode.BallJoint(Physics.world)
+		self.joint.attach(Physics.Nodes[entity1].body, Physics.Nodes[entity2].body)
+		self.joint.setAnchor(anchor)
+
+class UniversalJoint:
+	def __init__(self, entity1, entity2, anchor, axis1, axis2):
+		self.joint = ode.UniversalJoint(Physics.world)
+		self.joint.attach(Physics.Nodes[entity1].body, Physics.Nodes[entity2].body)
+		self.joint.setAnchor(anchor)
+		self.joint.setAxis1(axis1)
+		self.joint.setAxis2(axis2)
+
+class Hinge2Joint:
+	def __init__(self, entity1, entity2, anchor, axis1, axis2, limitLo, limitHi):
+		self.joint = ode.Hinge2Joint(Physics.world)
+		self.joint.attach(Physics.Nodes[entity1].body, Physics.Nodes[entity2].body)
+		self.joint.setAnchor(anchor)
+		self.joint.setAxis1(axis1)
+		self.joint.setAxis2(axis2)
+		self.joint.setParam(ode.ParamLoStop, limitLo)
+		self.joint.setParam(ode.ParamHiStop, limitHi)

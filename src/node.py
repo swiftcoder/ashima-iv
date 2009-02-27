@@ -3,7 +3,7 @@ import math
 from copy import copy
 
 from pyglet.gl import *
-from euclid import Matrix4
+from euclid import Matrix4, Vector3, Point3
 from renderer import Renderer
 
 class Node(object):
@@ -67,10 +67,15 @@ class BillboardNode(Node):
 
 class ZAxisBillboardNode(Node):
 	def render(self, camera):
-		m, v = self.transform, camera.view
+		'''m, v = self.transform, camera.view
 		m.a, m.b, m.c = v.a, v.e, 0
 		m.e, m.f, m.g = v.b, v.f, 0
-		m.i, m.j, m.k = 0,   0,   1
+		m.i, m.j, m.k = 0,   0,   1'''
+		
+		cam = camera.view*Point3() - self.transform*Point3()
+		z = self.transform*Vector3(0, 0, 1)
+		y = cam.cross(z)
+		self.transform = Matrix4.new_rotate_triple_axis(cam, y, z)
 		
 		Node.render(self, camera)
 

@@ -1,0 +1,8 @@
+{
+	"version" : 1,
+	
+	"model" : "data/models/turret/turret.obj",
+	"collision hull" : "data/models/turret/turret_collide.obj",
+	"shader" : "data/shaders/sunlight.shader",	
+	"textures" : ["data/models/turret/ambient.png", "data/models/turret/normal.png"]
+}

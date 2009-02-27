@@ -2,6 +2,7 @@
 	"version" : 1,
 	
 	"model" : "data/models/anaconda/anaconda.obj",
+	"collision hull" : "data/models/anaconda/anaconda_collide.obj",
 	"shader" : "data/shaders/sunlight.shader",	
 	"textures" : ["data/models/anaconda/ambient.dds", "data/models/anaconda/normal.dds"]
 }

@@ -8,23 +8,18 @@ import utility
 
 import math
 
-def predicate(a, b):
-	return cmp(a[1], b[1])
-
-class MissileAI(AINode):
+class TurretAI(AINode):
 	def __init__(self, entity):
 		AINode.__init__(self, entity)
 		
 		self.target = None
-		#self.last_acquire = 0.0
+		self.last_acquire = 0.0
 	
 	def acquire_target(self):
 		potential = self.find_targets()
 		
 		if len(potential):
-			potential.sort(predicate)
 			self.target = potential[0][2]
-			#print 'target aquired: ', self.target.name
 	
 	def get_force(self, target):
 		f = 0.1
@@ -36,23 +31,27 @@ class MissileAI(AINode):
 		
 		return diff
 	
-	def update(self, dt):
-		force = Vector3()
+	def update(self, dt):		
+		self.last_acquire += dt
 		
-		#self.last_acquire += dt
-		if not self.target: # or self.last_acquire > 1.0:
+		if not self.target or self.last_acquire > 0.1:
 			self.acquire_target()
-			#self.last_acquire = 0.0
+			self.last_acquire = 0.0
+		
+		force = self.get_force(self.target)
 		
 		dir = self.entity.rotation*Vector3(0, 0, 1)
-		force += self.get_force(self.target)		
+		dot =  dir.dot(force.normalized())
+		
+		if abs(force) < 250 and dot > 0.75:
+			self.entity.fire_primary()
 		
 		diff = utility.rotation_to(dir, force)
 		angle, axis = diff.get_angle_axis()
 		
 		self.entity.turn_towards( axis*angle )
 
-def missile_ai_factory(entity):
-	return MissileAI(entity)
+def turret_ai_factory(entity):
+	return TurretAI(entity)
 
-AI.factories['missile'] = missile_ai_factory
+AI.factories['turret'] = turret_ai_factory

@@ -6,7 +6,7 @@ from lifetime import Lifetime
 
 from node import Node, BillboardNode, ZAxisBillboardNode
 from sprite import Sprite
-from ribbon import Engine
+from ribbon import RibbonTrail
 
 from renderable import Renderable
 from renderer import Pass
@@ -20,6 +20,8 @@ import math
 
 from random import random
 
+from physics import CollisionMask
+
 def bullet_factory(position, rotation, velocity, team):
 	e = Entity('bullet')
 	
@@ -29,7 +31,7 @@ def bullet_factory(position, rotation, velocity, team):
 	n = ZAxisBillboardNode()
 	
 	n2 = Node(n)
-	n2.renderables.append( Renderable( Sprite(1.0, 2.0), Resources.load_shader('data/shaders/unlit.shader'), [Resources.load_texture('data/images/laser.png')], Pass.flares) )
+	n2.renderables.append( Renderable( Sprite(2.0, 4.0), Resources.load_shader('data/shaders/unlit.shader'), [Resources.load_texture('data/images/laser.png')], Pass.flares) )
 	n2.model.rotate_axis(-math.pi/2, Vector3(1, 0, 0))
 	
 	e.node = n
@@ -43,14 +45,16 @@ def bullet_factory(position, rotation, velocity, team):
 	
 	e.throttle = 1.0
 	
-	e.max_acceleration = 2.5
+	e.max_acceleration = 5.0
 	
 	e.mass = 0.001 # 1 kg
 	
 	e.lifetime = 0.75
 	
 	e.remove_on_collide = True
-	e.category_mask = 0x0
+	
+	e.category_mask = (CollisionMask.team & (team == 'blue')) | CollisionMask.weapon
+	e.collide_mask = (CollisionMask.team & (team != 'blue'))
 		
 	return e
 
@@ -61,7 +65,8 @@ def missile_factory(position, rotation, velocity, team):
 	e.physics = True
 	e.ai = 'missile'
 	
-	n = Node()
+	n = BillboardNode()
+	n.renderables.append( Renderable(Sprite(1, 1), Resources.load_shader('data/shaders/unlit.shader'), [Resources.load_texture('data/images/burst.png')]) )
 	e.node = n
 		
 	e.position = copy(position)
@@ -81,11 +86,14 @@ def missile_factory(position, rotation, velocity, team):
 	e.lifetime = 10.0
 	
 	e.remove_on_collide = True
-	e.category_mask = 0x0
 	
-	e.engines = [Engine(e, Vector3(0, 0, -1), 1.0, [Resources.load_texture('data/images/trail_missile.png'), Resources.load_texture('data/images/burst.png')])]
+	e.category_mask = (CollisionMask.team & (team == 'blue')) | CollisionMask.weapon
+	e.collide_mask = (CollisionMask.team & (team != 'blue'))
 	
 	e.team = team
+	e.team_no_reticule = True
+	
+	e.engines = [RibbonTrail(e, Vector3(0, 0, -1), Resources.load_texture('data/images/trail_missile.png'))]
 	
 	def on_remove(entity):
 		e = create_explosion(entity.position, Vector3(), 400, 5.0, 0.0, 1.0)

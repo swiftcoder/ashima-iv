@@ -18,6 +18,9 @@ class Entity(events.EventDispatcher):
 		if not self.has(attr):
 			self.set(attr, val)
 	
+	def perform_add(self):
+		self.dispatch_event('on_add', self)
+	
 	def perform_remove(self):
 		self.dispatch_event('on_remove', self)
 	
@@ -27,6 +30,7 @@ class Entity(events.EventDispatcher):
 	def perform_damage(self, damage):
 		self.dispatch_event('on_damage', self, damage)
 
+Entity.register_event_type('on_add')
 Entity.register_event_type('on_remove')
 Entity.register_event_type('on_death')
 Entity.register_event_type('on_damage')
@@ -50,6 +54,7 @@ class _World(events.EventDispatcher):
 	def add(self, entity):
 		self.Entities.append(entity)
 		self.dispatch_event('on_add', entity)
+		entity.perform_add()
 	
 	def remove(self, entity):
 		entity.perform_remove()
