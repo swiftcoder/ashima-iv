@@ -64,9 +64,12 @@ class Shader:
 		length = GLint()
 		glGetObjectParameterivARB(self.Handle, GL_ACTIVE_UNIFORM_MAX_LENGTH, byref(length))
 		
+		size = GLint()
+		_type = GLenum()
 		buf = create_string_buffer(length.value)
+		
 		for i in range(count.value):
-			glGetActiveUniformARB(self.Handle, i, length, None, None, None, buf)
+			glGetActiveUniformARB(self.Handle, i, length, None, byref(size), byref(_type), buf)
 			self.uniforms[buf.value] = i
 		
 		del buf

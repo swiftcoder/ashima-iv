@@ -34,8 +34,8 @@ elif sys.platform == 'win32':
 	OPTIONS = {
 		'bundle_files': 1,
 		'optimize': 2,
-		'compressed': 1,
-		'includes': ['pyglet.media.drivers.directsound'],
+		'compressed': True,
+		'includes': ['pyglet.media.drivers.directsound', 'pyglet.image.codecs.pil'],
 	}
 	extra_args = {
 		'setup_requires': ['py2exe'],
