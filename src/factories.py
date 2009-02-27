@@ -34,7 +34,7 @@ def create_camera(camera):
 	return e
 
 def cross_hairs(ship):
-	r = Renderable(Sprite(10, 10), Resources.load_shader('data/shaders/unlit.shader'), [Resources.load_texture('data/images/aim.png')], Pass.flares)
+	r = Renderable(Sprite(10, 10), Resources.load_shader('data/shaders/unlit.shader'), [Resources.load_texture('data/images/aim.png')], Pass.overlay)
 	
 	n = BillboardNode(ship.node)
 	n.renderables.append(r)
