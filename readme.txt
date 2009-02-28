@@ -5,7 +5,22 @@ A concept for a 3D space-combat simulator, as an entry to the udevgames 2008 com
 Prerequisites:
 
 Python (2.5+, http://www.python.org)
+PIL (1.1.6+, http://www.pythonware.com/products/pil)
 Pyglet (SVN revision 2408, http://pyglet.googlecode.com)
+
+Running:
+
+Run the file 'run.py' from the command line, using python:
+
+$ python run.py
+
+Building:
+
+Make sure you have py2app installed, and then run the following from the command line:
+
+$ python setup.py py2app
+
+The application package will be created in the 'dist' subdirectory.
 
 License:
 
