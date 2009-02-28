@@ -28,6 +28,8 @@ class _Health:
 				entity._last_damaged = entity.recharge_delay + 1.0
 			if not entity.has('_last_damaged_by'):
 				entity._last_damage_by = None
+			if not entity.has('_dead'):
+				entity._dead = False
 			
 			def deal_damage(self, entity):
 				if self._last_damage_by != entity:
@@ -37,7 +39,8 @@ class _Health:
 					
 					print self.name, '(', self.life, ') damages', entity.name, '(', entity.life, ')'
 					
-					if self.life <= 0.0:
+					if self.life <= 0.0 and not self._dead:
+						self._dead = True
 						self.perform_death()
 			entity.deal_damage = new.instancemethod(deal_damage, entity, Entity)
 		

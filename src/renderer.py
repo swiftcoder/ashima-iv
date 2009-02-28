@@ -26,7 +26,7 @@ class _Renderer:
 			for i in q:
 				self.render_item(*i)
 			
-			if p == Pass.sky or p == Pass.trails:
+			if p == Pass.sky or p == Pass.background or p == Pass.trails:
 				glClear(GL_DEPTH_BUFFER_BIT)
 		
 		self.queues = {}

@@ -2,12 +2,13 @@
 from entity import *
 
 from resources import Resources
-from node import Node, BillboardNode
+from node import Node, BillboardNode, SkyNode
 from model import Model
 from camera import CameraNode
 from tether import Tether
 
 from physics import FixedJoint, BallJoint, UniversalJoint, Hinge2Joint, CollisionMask
+from graphics import Graphics
 
 from sprite import Sprite
 
@@ -32,6 +33,12 @@ def create_camera(camera):
 	e.mass = 5.0
 	
 	return e
+
+def create_sky(camera):
+	sky = SkyNode(camera.node)
+	sphere = Resources.load_model('data/models/sky.model')
+	sphere.render_pass = Pass.sky
+	sky.renderables.append( sphere )
 
 def cross_hairs(ship):
 	r = Renderable(Sprite(10, 10), Resources.load_shader('data/shaders/unlit.shader'), [Resources.load_texture('data/images/aim.png')], Pass.overlay)
@@ -260,6 +267,7 @@ def create_hammerfall(position, team):
 	def on_death(self):
 		e = create_explosion(self.position, Vector3(), 2000, 200.0, 0.0, 5.0)
 		World.add(e)
+		print 'hammerfall death'
 		
 		self.damage = 10000
 		for t in self.turrets:
@@ -268,6 +276,8 @@ def create_hammerfall(position, team):
 		
 		@e.event
 		def on_remove(e):
+			e = create_explosion(self.position, Vector3(), 2000, 200.0, 0.0, 5.0)
+			World.add(e)
 			self.remove_from_world = True
 			print 'hammerfall killed'
 	

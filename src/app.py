@@ -1,142 +1,36 @@
 
 import pyglet
-from pyglet.window import key
 
 from window import Window
 
-from entity import World
-from graphics import Graphics
-from physics import Physics
-from lifetime import Lifetime
-from teams import Teams
-from ai import AI
-from health import Health
-
-import ai_missile, ai_fighter, ai_turret
-
-import factories
-
-from camera import Camera
-from node import Node, BillboardNode, SkyNode, IntervalNode
-from model import Model
-
-from controller import Controller
-from tether import Tether
-
-from renderer import Pass
-
-from dust import Dust
-
-import utility
-
-from resources import Resources
-
-from pyglet.gl import *
-
-from euclid import Vector3, Matrix4, Quaternion
-from math import sin, cos, pi
-
-sunlight = Resources.load_shader('data/shaders/sunlight.shader')
-
-ship = factories.create_hammerfall(Vector3(0, -250, 1200), 'red')
-World.add(ship)
-
-for i in range(4, 0, -1):
-	ship = factories.create_anaconda(Vector3(i*5, i*10, i*10 + 200), 'red')
-	World.add(ship)
-
-for i in range(2, 0, -1):
-	ship = factories.create_viper(Vector3(i*40, i*-10, i*10 + 25), 'blue', i != 1)
-	World.add(ship)
-
-control = Controller(ship)
-World.set_player(ship)
-
-@ship.event
-def on_remove(ship):
-	print 'defeat'
-
-fps_display = pyglet.clock.ClockDisplay()
-
-def init():	
-	glEnable(GL_CULL_FACE)
-	glFrontFace(GL_CCW)
+class AppState:
+	def update(self, dt):
+		pass
 	
-	glEnable(GL_DEPTH_TEST)
-	glDepthFunc(GL_LEQUAL)
-	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE)
-		
-	aspect = float(Window.width)/float(Window.height)
-	
-	global camera
-	camera = Camera(pi/4, aspect, 0.1, 100000.0)
-	
-	#camera.view.rotatey(pi/3).translate(4, -0.5, -8)
-	
-	Graphics.camera = camera
-	
-	cam = factories.create_camera(camera)
-	World.add(cam)
-	
-	aim = factories.aim_assist(cam)
-	
-	tether = Tether(cam, ship, Vector3(-5, 8, -16), Vector3(0, 0, 65))
-	
-	crosshairs = factories.cross_hairs(ship)
-	
-	sky = SkyNode(cam.node)
-	sphere = Resources.load_model('data/models/sky.model')
-	sphere.render_pass = Pass.sky
-	sky.renderables.append( sphere )
-	
-	#dust = IntervalNode(10, ship.node)
-	#dust.renderables.append( Dust(4, 10, 100) )
-	
-	Window.set_mouse_visible(False)
+	def draw(self):
+		pass
 
-elapsed_t = 0.0
-delta_t = 0.0
-
-mouse_x = 0
-mouse_y = 0
-
-	
-def update(dt):
-	global elapsed_t, delta_t
-	elapsed_t += dt
-	delta_t = dt
-	
-	World.perform_update(dt)
+states = []
 
 @Window.event
 def on_draw():
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-	
-	global elapsed_t, delta_t
-	
-	glColor4f(1, 1, 1, 1)
-	
-	sunlight.bind()
-	sunlight.uniform('sunDir', Vector3(-1, 1, 0).normalize())
-	sunlight.unbind()
-		
-	World.perform_frame()
-	
-	glMatrixMode(GL_PROJECTION) 
-	glLoadIdentity()
-	glOrtho(0, Window.width, 0, Window.height, -100, 100)
-	glMatrixMode(GL_MODELVIEW)
-	glLoadIdentity()
-	
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-	
-	fps_display.draw()
-	
-	glMatrixMode(GL_PROJECTION) 
-	glMatrixMode(GL_MODELVIEW)
+	try:
+		states[-1].draw()
+	except IndexError:
+		pyglet.app.exit()
 
-def run():
-	init()
+def update(dt):
+	try:
+		states[-1].update(dt)
+	except IndexError:
+		pyglet.app.exit()
+
+def run():	
+	from game import GameState
+	from splash import SplashState
+	
+	states.append(GameState())
+	states.append(SplashState())
 	
 	pyglet.clock.schedule_interval(update, 1/60.0)	
 	pyglet.app.run()
