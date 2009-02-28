@@ -17,7 +17,7 @@ if sys.platform == 'darwin':
 		'optimize': 2,
 		'compressed': True,
 		'includes': ['pyglet.media.drivers.openal', 'pyglet.image.codecs.pil'],
-		'frameworks': [],
+		'frameworks': ['libavbin.dylib'],
 		'resources': ['data'],
 		'semi_standalone': True
 	}
