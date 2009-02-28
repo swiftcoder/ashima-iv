@@ -42,7 +42,7 @@ def bullet_factory(position, rotation, velocity, team):
 	
 	e.node = n
 	
-	rot = Quaternion.new_rotate_axis(random()*math.pi/128.0, Vector3(random(), random(), random()))
+	rot = Quaternion.new_rotate_axis(random()*math.pi/256.0, Vector3(random(), random(), random()))
 	
 	e.position = copy(position)
 	e.rotation = copy(rotation) * rot

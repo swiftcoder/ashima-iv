@@ -3,13 +3,16 @@ import pyglet
 from pyglet.gl import *
 from pyglet.window import key
 
-from app import AppState, exit_state
+from app import AppState
 
 from window import Window
 
 from resources import Resources
 
-class SplashState(AppState):
+class OutcomeState(AppState):
+	def __init__(self, victory):
+		self.victory = victory
+	
 	def start(self):
 		music = pyglet.resource.media('data/music/nightmare.mp3')
 		
@@ -23,10 +26,12 @@ class SplashState(AppState):
 		
 		w, h = image.width, image.height
 		
-		play = Resources.load_texture('data/images/play.png')
-		quit = Resources.load_texture('data/images/quit.png')
+		if self.victory:
+			outcome = Resources.load_texture('data/images/victory.png')
+		else:	
+			outcome = Resources.load_texture('data/images/defeat.png')
 		
-		self.buttons = [pyglet.sprite.Sprite(play, x=w-500, y=h-500, batch=self.batch, group=foreground), pyglet.sprite.Sprite(quit, x=w-500, y=h-650, batch=self.batch, group=foreground)]
+		self.outcome = pyglet.sprite.Sprite(outcome, x=w/2 - outcome.width/2, y=h/2 - outcome.height/2, batch=self.batch, group=foreground)
 		
 		glMatrixMode(GL_PROJECTION)
 		glLoadIdentity()
@@ -37,18 +42,17 @@ class SplashState(AppState):
 		Window.push_handlers(self.on_key_press)
 		
 		self.player = music.play()
+		self.elapsed = 0.0
 	
 	def stop(self):
 		self.player.stop()
 		Window.pop_handlers()
 	
 	def update(self, dt):
-		pass
+		self.elapsed += dt
 		
 	def on_key_press(self, k, mods):
-		if k == key.P:
-			exit_state()
-		elif k == key.Q:
+		if self.elapsed > 4.0:
 			pyglet.app.exit()
 	
 	def draw(self):

@@ -13,6 +13,8 @@ import math
 
 from euclid import Vector2
 
+import app, splash
+
 class Controller:
 	def __init__(self, e):
 		self.e = e
@@ -94,7 +96,8 @@ class Controller:
 			self.right_mouse = False
 	
 	def on_key_press(self, k, mods):
-		pass
+		if k == key.ESCAPE:
+			app.enter_state(splash.SplashState())
 	
 	def on_key_release(self, k, mods):
 		pass

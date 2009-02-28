@@ -41,9 +41,7 @@ class _Window(pyglet.window.Window):
 			self.set_size(1024, 640)
 	
 	def on_key_press(self, symbol, modifiers):		
-		if symbol == key.ESCAPE:
-			pyglet.app.exit()
-		elif symbol == key.F:
+		if symbol == key.F:
 			self.toggle_fullscreen()
 		elif symbol == key.F1:
 			self.shot += 1

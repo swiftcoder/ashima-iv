@@ -131,8 +131,8 @@ def create_viper(position, team, ai=True):
 	
 	e.health = True
 	
-	e.max_life = 250
-	e.life = 250
+	e.max_life = 150
+	e.life = 150
 	e.damage = 1
 	e.recharge_rate = 4
 	
@@ -168,10 +168,13 @@ def create_viper(position, team, ai=True):
 	
 	@e.event
 	def on_death(self):
-		e = create_explosion(self.position, Vector3(), 1500, 15.0, 0.0, 2.0)
+		e = create_explosion(self.position, Vector3(), 2500, 5.0, 0.0, 1.0)
 		World.add(e)
-		self.remove_from_world = True
-		print 'viper killed'
+		
+		@e.event
+		def on_remove(e):
+			self.remove_from_world = True
+			print 'viper killed'
 	
 	return e
 
@@ -265,7 +268,7 @@ def create_hammerfall(position, team):
 	
 	@e.event
 	def on_death(self):
-		e = create_explosion(self.position, Vector3(), 2000, 200.0, 0.0, 5.0)
+		e = create_explosion(self.position, Vector3(), 4000, 200.0, 0.0, 5.0)
 		World.add(e)
 		print 'hammerfall death'
 		
@@ -276,7 +279,7 @@ def create_hammerfall(position, team):
 		
 		@e.event
 		def on_remove(e):
-			e = create_explosion(self.position, Vector3(), 2000, 200.0, 0.0, 5.0)
+			e = create_explosion(self.position, Vector3(), 4000, 200.0, 0.0, 5.0)
 			World.add(e)
 			self.remove_from_world = True
 			print 'hammerfall killed'

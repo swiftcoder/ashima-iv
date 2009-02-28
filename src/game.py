@@ -4,7 +4,8 @@ from pyglet.gl import *
 
 import math
 
-from app import AppState
+from app import AppState, enter_state
+from outcome import OutcomeState
 
 from window import Window
 from entity import World
@@ -16,18 +17,14 @@ from camera import Camera
 from controller import Controller
 from tether import Tether
 
-from entity import World
 from graphics import Graphics
-from physics import Physics
-from lifetime import Lifetime
 from teams import Teams
-from ai import AI
-from health import Health
-
-import ai_missile, ai_fighter, ai_turret
 
 class GameState(AppState):
-	def __init__(self):
+	def start(self):
+		music = pyglet.resource.media('data/music/the_moonlight_strikers_act1.mp3')
+		self.player = music.play()
+		
 		self.sunlight = Resources.load_shader('data/shaders/sunlight.shader')
 		
 		ship = factories.create_hammerfall(Vector3(0, -250, 2400), 'red')
@@ -41,12 +38,13 @@ class GameState(AppState):
 			ship = factories.create_viper(Vector3(i*40, i*-10, i*10 + 25), 'blue', i != 1)
 			World.add(ship)
 		
-		control = Controller(ship)
-		World.set_player(ship)
+		self.ship = ship
+		World.set_player(self.ship)
 		
 		@ship.event
 		def on_remove(ship):
 			print 'defeat'
+			enter_state( OutcomeState(False) )
 
 		self.fps_display = pyglet.clock.ClockDisplay()
 		
@@ -71,10 +69,22 @@ class GameState(AppState):
 		crosshairs = factories.cross_hairs(ship)
 		
 		factories.create_sky(cam)
+		
+	def resume(self):
+		control = Controller(self.ship)
+		self.player.play()
+			
+	def pause(self):
+		if self.player:
+			self.player.pause()
 	
 	def update(self, dt):
 		World.perform_update(dt)
-	
+		
+		if Teams.in_team('red') == []:
+			print 'victory'
+			enter_state( OutcomeState(True) )
+			
 	def draw(self):
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 		

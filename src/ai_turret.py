@@ -43,7 +43,7 @@ class TurretAI(AINode):
 		dir = self.entity.rotation*Vector3(0, 0, 1)
 		dot =  dir.dot(force.normalized())
 		
-		if abs(force) < 250 and dot > 0.75:
+		if abs(force) < 2500 and dot > 0.75:
 			self.entity.fire_primary()
 		
 		diff = utility.rotation_to(dir, force)
