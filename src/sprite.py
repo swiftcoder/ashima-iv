@@ -12,7 +12,7 @@ class Sprite(Drawable):
 		texcoords0 = [0,0, 1,0, 1,1, 0,1]
 		
 		indices = [0,1,2, 0,2,3]
-		self.vlist = pyglet.graphics.vertex_list_indexed( len(verts)/2, indices, ('v2f', verts), ('0t2f', texcoords0) )
+		self.vlist = pyglet.graphics.vertex_list_indexed( len(verts)/2, indices, ('v2f', verts), ('t2f', texcoords0) )
 	
 	def draw(self):		
 		glDepthMask(GL_FALSE)
