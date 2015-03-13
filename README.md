@@ -1,4 +1,4 @@
-Ashima IV
+# Ashima IV
 
 A concept for a 3D space-combat simulator, as an entry to the udevgames 2008 competition (http://www.udevgames.com). Implemented in Python, using Pyglet and ODE.
 
@@ -34,7 +34,7 @@ All art assets are placed in the public domain, except where noted in the indivi
 
 Contact:
 
-http://darkcoda.googlecode.com
+http://github.com/swiftcoder/ashima-iv
 
 http://swiftcoder.wordpress.com
 
