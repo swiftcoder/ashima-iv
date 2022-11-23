@@ -34,8 +34,8 @@ All art assets are placed in the public domain, except where noted in the indivi
 
 Contact:
 
-http://github.com/swiftcoder/ashima-iv
+https://github.com/swiftcoder/ashima-iv
 
-http://swiftcoder.wordpress.com
+https://trist.am
 
-swiftcoder@gmail.com
+tristam@trist.am
